@@ -1,0 +1,80 @@
+* {
+  cursor: none;
+}
+/* For larger screen sizes (responsive scaling) */
+@media (min-width: 1024px) {
+  .nebula-cursor {
+    transform: scale(2.5);  /* Scale up by 1.5 times */
+  }
+}
+
+@media (max-width: 7px) {
+  .nebula-cursor {
+    transform: scale(1);  /* Default scale for smaller screens */
+  }
+}
+
+/* Custom cursor styles */
+.custom-cursor {
+  width: 50px;
+  height: 50px;
+  position: fixed; /* Fixed so it follows the mouse */
+  pointer-events: none;
+  z-index: 9999;
+  top: 0;
+  left: 0;
+  transform: rotate(45deg); /* Center the cursor and apply the rotation */
+  background: none;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+/* The arrowhead part of the cursor */
+.cursor-arrow {
+  width: 100%;
+  height: 100%;
+  clip-path: polygon(
+    0% 50%,   /* Left middle */
+    100% 0%,  /* Right top */
+    100% 100%, /* Right bottom */
+    0% 50%    /* Left middle */
+  );
+  background: linear-gradient(135deg, 
+    #00ffffcd 0%,   /* Cyan base */
+    #000ed4 100%  /* Cyan tip */
+  );
+  transform-origin: center;
+  transition: transform 0.2s ease;
+}
+
+/* Glow effect when hovering over a link or button */
+.cursor-glow {
+  width: 70px;
+  height: 70px;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9998;
+  opacity: 0.8;
+  transform: translate(-50%, -50%);
+}
+
+/* Breathing animation when idle */
+.cursor-arrow.idle {
+  animation: breathe ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0% {
+    transform: translate(-50%, -50%) rotate(45deg) scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translate(-50%, -50%) rotate(45deg) scale(1.5);
+    opacity: 1.5;
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(45deg) scale(1);
+    opacity: 0.8;
+  }
+}
