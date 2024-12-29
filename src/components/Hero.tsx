@@ -1,4 +1,3 @@
-import React from 'react';
 import { ChevronDown } from 'lucide-react';
 import SocialLinks from './SocialLinks';
 
@@ -10,7 +9,7 @@ const Hero = () => {
       <div className="container mx-auto px-6 py-24 text-center relative z-10">
         <div className="mb-8">
           <img
-            src="src/components/image.jpg"
+            src="image.jpg"
             alt="Profile"
             className="w-32 h-32 rounded-full mx-auto border-2 border-blue-400 p-1"
           />
