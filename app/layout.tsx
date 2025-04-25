@@ -6,6 +6,7 @@ import Navigation from '@/components/navigation';
 import Footer from '@/components/footer';
 import Script from 'next/script';
 import { Analytics } from "@vercel/analytics/react"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 // Optimize font loading by defining display strategy
 const inter = Inter({ 
