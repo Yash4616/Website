@@ -1,0 +1,24 @@
+{
+  "name": "Yash Gurjar | AI & ML Engineer",
+  "short_name": "Yash Gurjar",
+  "description": "Portfolio of Yash Gurjar, AI & ML Engineer",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [
+    {
+      "src": "/myimage.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/myimage.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ]
+}
+
