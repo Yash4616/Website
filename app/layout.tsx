@@ -5,6 +5,7 @@ import { ThemeProvider } from '@/components/theme-provider';
 import Navigation from '@/components/navigation';
 import Footer from '@/components/footer';
 import Script from 'next/script';
+import { Analytics } from "@vercel/analytics/react"
 
 // Optimize font loading by defining display strategy
 const inter = Inter({ 
