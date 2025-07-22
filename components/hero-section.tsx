@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
+import Aurora from './Aurora';
 import { motion } from 'framer-motion'
 import { FiArrowDown, FiEye } from 'react-icons/fi'
 
@@ -69,8 +70,11 @@ export default function HeroSection() {
       id="hero" 
       className="min-h-screen relative flex items-center overflow-hidden pt-16"
     >
-      {/* Background animated elements */}
-      <div className="absolute inset-0 z-0">
+      {/* Aurora background effect */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '220px' }}>
+          <Aurora />
+        </div>
         <div className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl" />
         <div className="absolute bottom-20 right-10 w-72 h-72 bg-blue-500/5 rounded-full blur-3xl" />
       </div>
