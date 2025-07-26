@@ -91,8 +91,8 @@ void main() {
   
   float height = snoise(vec2(uv.x * 2.0 + uTime * 0.1, uTime * 0.25)) * 0.5 * uAmplitude;
   height = exp(height);
-  height = (uv.y * 2.0 - height + 0.2);
-  float intensity = 0.6 * height;
+  height = (uv.y * 2.0 - height + 0.2); // Increase 2.0 to 4.0 for more vertical stretch
+  float intensity = 0.7 * height; // Slightly increase intensity for more visual impact
   
   float midPoint = 0.20;
   float auroraAlpha = smoothstep(midPoint - uBlend * 0.5, midPoint + uBlend * 0.5, intensity);
@@ -113,9 +113,15 @@ interface AuroraProps {
 
 export default function Aurora(props: AuroraProps) {
   const {
-    colorStops = ["#5227FF", "#7cff67", "#5227FF"],
-    amplitude = 1.0,
-    blend = 0.5,
+    colorStops = [
+  "#A020F0", // Vibrant Aurora Purple (deeper for magnetism)
+  "#00FF7F", // Lush Aurora Green (fresh, eye-catching mid-tone)
+  "#40E0D0", // Smooth Aurora Turquoise (bridges for seamless flow)
+  "#E6F0FF"  // Ethereal Aurora Blue-White (soft, inviting highlight)
+],
+    amplitude = 1.1,
+    blend = 0.6,
+    speed = 2.2,
   } = props;
   const propsRef = useRef<AuroraProps>(props);
   propsRef.current = props;
@@ -178,9 +184,9 @@ export default function Aurora(props: AuroraProps) {
     let animateId = 0;
     const update = (t: number) => {
       animateId = requestAnimationFrame(update);
-      const { time = t * 0.01, speed = 1.0 } = propsRef.current;
+      const { time = t * 0.01, speed: animSpeed = speed } = propsRef.current;
       if (program) {
-        program.uniforms.uTime.value = time * speed * 0.1;
+        program.uniforms.uTime.value = time * animSpeed * 0.13;
         program.uniforms.uAmplitude.value = propsRef.current.amplitude ?? 1.0;
         program.uniforms.uBlend.value = propsRef.current.blend ?? blend;
         const stops = propsRef.current.colorStops ?? colorStops;

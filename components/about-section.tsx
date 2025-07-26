@@ -54,7 +54,7 @@ export default function AboutSection() {
                 <div className="space-y-4">
                   <div>
                     <div className="flex justify-between items-center">
-                      <h4 className="font-medium">B.Tech - Computing Science & Engineering, Specialization (AI & ML IBM)</h4>
+                      <h4 className="font-medium">B.Tech - CSE Specialization (AI & ML IBM)</h4>
                       <Badge variant="outline">2023-2027</Badge>
                     </div>
                     <p className="text-sm text-muted-foreground mt-1">JECRC University</p>
@@ -76,21 +76,22 @@ export default function AboutSection() {
           <div className="md:w-3/5">
             <h2 className="text-3xl font-bold tracking-tight">About Me</h2>
             <p className="mt-6 text-lg leading-relaxed">
-              I'm an AI & ML Engineer with a passion for solving complex problems through innovative algorithms 
-              and deep learning architectures. While still gaining experience in the field, I've worked on a wide 
-              range of projects from computer vision applications to natural language processing solutions.
+              I'm an AI and ML Engineer passionate about tackling complex challenges through innovative
+              algorithms and advanced deep learning architectures. Though early in my career, I've 
+              contributed to diverse projects spanning computer vision applications and natural language
+              processing solutions.
             </p>
             
             <p className="mt-4 leading-relaxed text-muted-foreground">
-              My journey into AI began during my undergraduate studies, where I was fascinated by how machines 
-              could be trained to perform tasks that typically require human intelligence. This fascination 
-              led me to pursue career in AI, where I focused on deep learning techniques for computer vision.
+              My fascination with AI began during my undergraduate studies, where I discovered the 
+              potential of machines to mimic human intelligence. This inspired me to specialize in 
+              deep learning for computer vision, launching my professional journey in the field.
             </p>
             
             <p className="mt-4 leading-relaxed text-muted-foreground">
-              Today, I'm dedicated to pushing the boundaries of what's possible with AI, contributing to 
-              open-source projects, and staying at the forefront of research in machine learning. I'm particularly 
-              interested in practical applications that can make a positive impact on society.
+              Today, I focus on expanding AI's frontiers by contributing to open-source initiatives 
+              and keeping pace with cutting-edge machine learning research. I'm especially drawn to 
+              practical applications that drive positive societal impact.
             </p>
 
             <h3 className="mt-10 text-xl font-semibold">Key Strengths</h3>

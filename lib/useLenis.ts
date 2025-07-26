@@ -5,7 +5,8 @@ import Lenis from 'lenis';
 export default function useLenis() {
   useEffect(() => {
     const lenis = new Lenis({
-      lerp: 0.1 // Adjust for smoothness
+      lerp: 0.1,
+      syncTouch: true,
     });
 
     function raf(time: number) {

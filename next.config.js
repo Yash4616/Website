@@ -19,8 +19,6 @@ const nextConfig = {
   },
   // Enable gzip compression for static exports
   compress: true,
-  // Improve build performance
-  swcMinify: true,
   reactStrictMode: true,
   poweredByHeader: false,
 };
