@@ -37,7 +37,7 @@ const projects = [
     id: 2,
     title: 'Computer Vision',
     description: 'A collection of computer vision models and utilities, including image classification, object detection, and image processing pipelines.',
-    image: 'https://images.pexels.com/photos/265087/pexels-photo-265087.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&dpr=1',
+    image: 'https://images.pexels.com/photos/3103199/pexels-photo-3103199.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&dpr=1',
     categories: ['ml', 'computer-vision'],
     technologies: ['PyTorch', 'Numpy', 'openCV'],
     repoUrl: 'https://github.com/Yash4616/Computer-Vision.git',
