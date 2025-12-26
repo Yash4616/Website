@@ -76,8 +76,8 @@ export default function AboutSection() {
           <div className="md:w-3/5">
             <h2 className="text-3xl font-bold tracking-tight">About Me</h2>
             <p className="mt-6 text-lg leading-relaxed">
-              I'm an AI and ML Engineer passionate about tackling complex challenges through innovative
-              algorithms and advanced deep learning architectures. Though early in my career, I've 
+              I&apos;m an AI and ML Engineer passionate about tackling complex challenges through innovative
+              algorithms and advanced deep learning architectures. Though early in my career, I&apos;ve 
               contributed to diverse projects spanning computer vision applications and natural language
               processing solutions.
             </p>
@@ -89,8 +89,8 @@ export default function AboutSection() {
             </p>
             
             <p className="mt-4 leading-relaxed text-muted-foreground">
-              Today, I focus on expanding AI's frontiers by contributing to open-source initiatives 
-              and keeping pace with cutting-edge machine learning research. I'm especially drawn to 
+              Today, I focus on expanding AI&apos;s frontiers by contributing to open-source initiatives 
+              and keeping pace with cutting-edge machine learning research. I&apos;m especially drawn to 
               practical applications that drive positive societal impact.
             </p>
 

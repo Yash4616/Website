@@ -58,7 +58,7 @@ export default function ContactSection() {
           <p className="mt-4 text-lg text-muted-foreground">
             Have a question or want to work together? Feel free to reach out!
             <br />
-            (Doesn't work just mail me)
+            (Doesn&apos;t work just mail me)
           </p>
         </div>
 

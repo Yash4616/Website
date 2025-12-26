@@ -2,7 +2,7 @@ interface RootLayoutProps {
   children: React.ReactNode;
 }
 import './globals.css';
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
 import Navigation from '@/components/navigation';
@@ -19,11 +19,16 @@ const inter = Inter({
   preload: true,
 });
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
+  themeColor: '#ffffff',
+};
+
 export const metadata: Metadata = {
   title: 'Yash Gurjar | AI & ML Engineer',
   description: 'Portfolio of Yash Gurjar, AI & ML Engineer specializing in Computer Vision, Neural Networks, and TensorFlow',
-  viewport: 'width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover',
-  themeColor: '#ffffff',
   manifest: '/manifest.json',
 };
 
@@ -62,14 +67,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
             __html: `
               if ('serviceWorker' in navigator) {
                 window.addEventListener('load', function() {
-                  navigator.serviceWorker.register('/sw.js').then(
-                    function(registration) {
-                      console.log('ServiceWorker registration successful with scope: ', registration.scope);
-                    },
-                    function(error) {
-                      console.log('ServiceWorker registration failed: ', error);
-                    }
-                  );
+                  navigator.serviceWorker.register('/sw.js').catch(function() {});
                 });
               }
             `

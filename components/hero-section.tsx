@@ -6,20 +6,21 @@ import Aurora from './Aurora';
 import { motion } from 'framer-motion'
 import { FiArrowDown, FiEye } from 'react-icons/fi'
 
+const TYPING_TEXTS = ['Computer Vision', 'Neural Networks', 'TensorFlow', 'Machine Learning','Deep Learning', 'NLP', 'Artificial Intelligence'] as const;
+const TYPING_SPEED = 100;
+const DELETING_SPEED = 50;
+const PAUSE_TIME = 1500;
+
 export default function HeroSection() {
   const [typedText, setTypedText] = useState('')
   const [textIndex, setTextIndex] = useState(0)
   const [charIndex, setCharIndex] = useState(0)
   const [isDeleting, setIsDeleting] = useState(false)
-  const texts = ['Computer Vision', 'Neural Networks', 'TensorFlow', 'Machine Learning','Deep Learning', 'NLP', 'Artificial Intelligence']
-  const typingSpeed = 100
-  const deletingSpeed = 50
-  const pauseTime = 1500
 
   useEffect(() => {
     const timeout = setTimeout(() => {
       // Current text being typed
-      const currentText = texts[textIndex]
+      const currentText = TYPING_TEXTS[textIndex]
       
       // If deleting
       if (isDeleting) {
@@ -29,7 +30,7 @@ export default function HeroSection() {
         // If done deleting
         if (charIndex <= 1) {
           setIsDeleting(false)
-          setTextIndex((textIndex + 1) % texts.length)
+          setTextIndex((textIndex + 1) % TYPING_TEXTS.length)
         }
       } 
       // If typing
@@ -43,13 +44,13 @@ export default function HeroSection() {
           clearTimeout(timeout)
           setTimeout(() => {
             // Continue with deletion after pause
-          }, pauseTime)
+          }, PAUSE_TIME)
         }
       }
-    }, isDeleting ? deletingSpeed : typingSpeed)
+    }, isDeleting ? DELETING_SPEED : TYPING_SPEED)
     
     return () => clearTimeout(timeout)
-  }, [typedText, charIndex, textIndex, isDeleting, texts])
+  }, [charIndex, textIndex, isDeleting])
 
   const scrollToProjects = () => {
     const element = document.querySelector('#projects')

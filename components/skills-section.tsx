@@ -109,7 +109,7 @@ export default function SkillsSection() {
         <div className="max-w-3xl mx-auto text-center mb-12">
           <h2 className="text-3xl font-bold tracking-tight">Skills & Expertise</h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            Here's a breakdown of my technical skills and areas of expertise
+            Here&apos;s a breakdown of my technical skills and areas of expertise
           </p>
         </div>
 
@@ -146,7 +146,7 @@ export default function SkillsSection() {
         </Tabs>
 
         <div className="mt-16 max-w-4xl mx-auto">
-          <h3 className="text-xl font-semibold text-center mb-8">Technologies I've worked with</h3>
+          <h3 className="text-xl font-semibold text-center mb-8">Technologies I&apos;ve worked with</h3>
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-6">
             {technologySvgs.map((tech, i) => (
               <div 

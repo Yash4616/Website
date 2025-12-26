@@ -23,7 +23,7 @@ export default function Footer() {
             </Link>
             <p className="mt-2 text-muted-foreground">
               AI & ML Engineer specializing in Computer Vision, Neural Networks, and TensorFlow.
-              Building intelligent solutions for tomorrow's challenges.
+              Building intelligent solutions for tomorrow&apos;s challenges.
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
               <Button variant="ghost" size="icon" className="rounded-full" asChild>
