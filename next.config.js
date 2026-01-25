@@ -1,23 +1,22 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export',
+  // Removed 'output: export' to enable full Next.js features (API routes, ISR, SSR)
   eslint: {
-    ignoreDuringBuilds: false, // Enable ESLint during builds for security
+    ignoreDuringBuilds: false,
   },
-  images: { 
-    unoptimized: true, // Disable image optimization for static export
-    domains: ['images.pexels.com'], // Allow optimization for external domain
-    deviceSizes: [640, 750, 828, 1080, 1200, 1920], // Define device size breakpoints
-    imageSizes: [16, 32, 48, 64, 96, 128, 256], // Define image size breakpoints
+  images: {
+    formats: ['image/avif', 'image/webp'],
+    domains: ['images.pexels.com'],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256],
   },
-  // Add compiler optimizations
+  // Compiler optimizations
   compiler: {
-    // Remove console logs in production
     removeConsole: process.env.NODE_ENV === 'production' ? {
       exclude: ['error', 'warn'],
     } : false,
   },
-  // Enable gzip compression for static exports
+  // Enable gzip compression
   compress: true,
   reactStrictMode: true,
   poweredByHeader: false,
