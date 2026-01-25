@@ -81,26 +81,26 @@ export default function Navigation() {
             <div className="flex gap-2">
               <Button variant="ghost" size="icon" className="rounded-full" asChild>
                 <Link href="https://github.com/Yash4616" target="_blank" rel="noopener noreferrer">
-                  <FaGithub className="h-[1.2rem] w-[1.2rem]" />
+                  <FaGithub className="h-[1.2rem] w-[1.2rem]" aria-hidden="true" />
                   <span className="sr-only">GitHub</span>
                 </Link>
               </Button>
               <Button variant="ghost" size="icon" className="rounded-full" asChild>
                 <Link href="https://linkedin.com/in/yashgurjar9" target="_blank" rel="noopener noreferrer">
-                  <FaLinkedin className="h-[1.2rem] w-[1.2rem]" />
+                  <FaLinkedin className="h-[1.2rem] w-[1.2rem]" aria-hidden="true" />
                   <span className="sr-only">LinkedIn</span>
                 </Link>
               </Button>
               <Button variant="ghost" size="icon" className="rounded-full" asChild>
                 <Link href="https://x.com/Yash_9724?t=S830SiTORnK3Lmhj4myo5w&s=09" target="_blank" rel="noopener noreferrer">
-                  <FaXTwitter className="h-[1.2rem] w-[1.2rem]" />
+                  <FaXTwitter className="h-[1.2rem] w-[1.2rem]" aria-hidden="true" />
                   <span className="sr-only">Twitter</span>
                 </Link>
               </Button>
             </div>
             <Button size="sm" className="gap-1" asChild>
               <a href="/assets/pdfs/Resume.pdf" download>
-                <FiDownload className="h-4 w-4" />
+                <FiDownload className="h-4 w-4" aria-hidden="true" />
                 Resume
               </a>
             </Button>
@@ -112,8 +112,8 @@ export default function Navigation() {
           <ThemeToggle />
           <Button variant="ghost" size="icon" className="min-w-[44px] min-h-[44px]" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
             <div className="relative w-6 h-6">
-              <FiMenu className={`absolute inset-0 h-6 w-6 transition-opacity duration-200 ${mobileMenuOpen ? 'opacity-0' : 'opacity-100'}`} />
-              <FiX className={`absolute inset-0 h-6 w-6 transition-opacity duration-200 ${mobileMenuOpen ? 'opacity-100' : 'opacity-0'}`} />
+              <FiMenu className={`absolute inset-0 h-6 w-6 transition-opacity duration-200 ${mobileMenuOpen ? 'opacity-0' : 'opacity-100'}`} aria-hidden="true" />
+              <FiX className={`absolute inset-0 h-6 w-6 transition-opacity duration-200 ${mobileMenuOpen ? 'opacity-100' : 'opacity-0'}`} aria-hidden="true" />
             </div>
           </Button>
         </div>
@@ -141,25 +141,25 @@ export default function Navigation() {
               <li className="pt-2 flex flex-wrap gap-2">
                 <Button variant="ghost" size="icon" className="rounded-full" asChild>
                   <Link href="https://github.com/Yash4616" target="_blank" rel="noopener noreferrer">
-                    <FaGithub className="h-5 w-5" />
+                    <FaGithub className="h-5 w-5" aria-hidden="true" />
                     <span className="sr-only">GitHub</span>
                   </Link>
                 </Button>
                 <Button variant="ghost" size="icon" className="rounded-full" asChild>
                   <Link href="https://linkedin.com/in/yashgurjar9" target="_blank" rel="noopener noreferrer">
-                    <FaLinkedin className="h-5 w-5" />
+                    <FaLinkedin className="h-5 w-5" aria-hidden="true" />
                     <span className="sr-only">LinkedIn</span>
                   </Link>
                 </Button>
                 <Button variant="ghost" size="icon" className="rounded-full" asChild>
                   <Link href="https://x.com/Yash_9724?t=S830SiTORnK3Lmhj4myo5w&s=09" target="_blank" rel="noopener noreferrer">
-                    <FaXTwitter className="h-5 w-5" />
+                    <FaXTwitter className="h-5 w-5" aria-hidden="true" />
                     <span className="sr-only">Twitter</span>
                   </Link>
                 </Button>
                 <Button size="sm" className="gap-1" asChild>
                   <a href="/assets/pdfs/Resume.pdf" download>
-                    <FiDownload className="h-4 w-4" />
+                    <FiDownload className="h-4 w-4" aria-hidden="true" />
                     Resume
                   </a>
                 </Button>

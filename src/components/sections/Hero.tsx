@@ -86,16 +86,10 @@ export default function HeroSection() {
       {/* Content */}
       <div className="container z-10 relative">
         <div className="max-w-3xl flex flex-col gap-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-none">
-              Yash Gurjar
-              <span className="block text-foreground mt-0.5">AI & ML Engineer</span>
-            </h1>
-          </motion.div>
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-none">
+            Yash Gurjar
+            <span className="block text-foreground mt-0.5">AI & ML Engineer</span>
+          </h1>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -124,7 +118,7 @@ export default function HeroSection() {
             className="mt-2 flex flex-wrap gap-4"
           >
             <Button size="lg" onClick={scrollToProjects} className="gap-2">
-              <FiEye className="h-5 w-5" />
+              <FiEye className="h-5 w-5" aria-hidden="true" />
               View Projects
             </Button>
             <Button size="lg" variant="outline" onClick={scrollToContact}>
@@ -141,7 +135,7 @@ export default function HeroSection() {
           animate={{ y: [0, 10, 0] }}
           transition={{ duration: 1.5, repeat: Infinity }}
         >
-          <FiArrowDown className="h-6 w-6 text-muted-foreground" />
+          <FiArrowDown className="h-6 w-6 text-muted-foreground" aria-hidden="true" />
         </motion.div>
       </div>
     </section>
