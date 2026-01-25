@@ -80,7 +80,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <link rel="dns-prefetch" href="https://images.pexels.com" />
 
         {/* Add preload for critical assets */}
-        <link rel="preload" href="/assets/images/myimage.jpg" as="image" />
+        {/* <link rel="preload" href="/assets/images/myimage.jpg" as="image" /> */}
       </head>
       <body className={inter.className}>
         <ClientWrapper>

@@ -110,7 +110,7 @@ export default function Navigation() {
         {/* Mobile menu button - shows below lg (1024px) */}
         <div className="flex lg:hidden items-center gap-4">
           <ThemeToggle />
-          <Button variant="ghost" size="icon" className="min-w-[44px] min-h-[44px]" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+          <Button variant="ghost" size="icon" className="min-w-[44px] min-h-[44px]" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} aria-label="Toggle menu">
             <div className="relative w-6 h-6">
               <FiMenu className={`absolute inset-0 h-6 w-6 transition-opacity duration-200 ${mobileMenuOpen ? 'opacity-0' : 'opacity-100'}`} aria-hidden="true" />
               <FiX className={`absolute inset-0 h-6 w-6 transition-opacity duration-200 ${mobileMenuOpen ? 'opacity-100' : 'opacity-0'}`} aria-hidden="true" />
