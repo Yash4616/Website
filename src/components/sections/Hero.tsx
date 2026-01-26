@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import Aurora from '@/components/features/Aurora';
+import { TextReveal } from '@/components/ui/text-reveal'
 import { motion } from 'framer-motion'
 import { FiArrowDown, FiEye } from 'react-icons/fi'
 
@@ -72,7 +73,7 @@ export default function HeroSection() {
   return (
     <section
       id="hero"
-      className="min-h-screen relative flex items-center overflow-hidden pt-16"
+      className="min-h-dvh relative flex items-center overflow-hidden pt-16"
     >
       {/* Aurora background effect */}
       <div className="absolute inset-0 z-0 pointer-events-none">
@@ -87,8 +88,18 @@ export default function HeroSection() {
       <div className="container z-10 relative">
         <div className="max-w-3xl flex flex-col gap-4">
           <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-none">
-            Yash Gurjar
-            <span className="block text-foreground mt-0.5">AI & ML Engineer</span>
+            <TextReveal
+              text="Yash Gurjar"
+              staggerDelay={0.06}
+              delay={0.2}
+            />
+            <span className="block text-foreground mt-0.5">
+              <TextReveal
+                text="AI & ML Engineer"
+                staggerDelay={0.04}
+                delay={0.8}
+              />
+            </span>
           </h1>
 
           <motion.div

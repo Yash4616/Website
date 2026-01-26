@@ -21,7 +21,7 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   viewportFit: 'cover',
-  themeColor: '#ffffff',
+  themeColor: '#0a0a0a',
 };
 
 export const metadata: Metadata = {
@@ -30,15 +30,15 @@ export const metadata: Metadata = {
     template: '%s | Yash Gurjar',
   },
   description: 'Portfolio of Yash Gurjar, AI & ML Engineer specializing in Computer Vision, Neural Networks, Deep Learning, and TensorFlow. Building intelligent solutions for tomorrow\'s challenges.',
-  keywords: ['AI Engineer', 'ML Engineer', 'Machine Learning', 'Computer Vision', 'Deep Learning', 'TensorFlow', 'PyTorch', 'Neural Networks', 'Portfolio'],
-  authors: [{ name: 'Yash Gurjar', url: 'https://yashgurjar.dev' }],
+  keywords: ['AI Engineer', 'ML Engineer', 'Machine Learning', 'Computer Vision', 'Deep Learning', 'TensorFlow', 'PyTorch', 'Neural Networks', 'Portfolio', 'Jaipur', 'Rajasthan', 'India'],
+  authors: [{ name: 'Yash Gurjar', url: 'https://yash.systems' }],
   creator: 'Yash Gurjar',
   manifest: '/manifest.json',
-  metadataBase: new URL('https://yashgurjar.dev'),
+  metadataBase: new URL('https://yash.systems'),
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://yashgurjar.dev',
+    url: 'https://yash.systems',
     siteName: 'Yash Gurjar Portfolio',
     title: 'Yash Gurjar | AI & ML Engineer',
     description: 'Portfolio of Yash Gurjar, AI & ML Engineer specializing in Computer Vision, Neural Networks, and Deep Learning.',
@@ -71,28 +71,60 @@ export const metadata: Metadata = {
   },
 };
 
+// JSON-LD structured data for SEO
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Yash Gurjar',
+  jobTitle: 'AI & ML Engineer',
+  url: 'https://yash.systems',
+  email: 'yashgurjar9714@gmail.com',
+  sameAs: [
+    'https://github.com/Yash4616',
+    'https://linkedin.com/in/yashgurjar9',
+    'https://x.com/Yash_9724',
+  ],
+  knowsAbout: ['Machine Learning', 'Computer Vision', 'Deep Learning', 'TensorFlow', 'PyTorch', 'Neural Networks'],
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Jaipur',
+    addressRegion: 'Rajasthan',
+    addressCountry: 'India',
+  },
+};
+
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" className="dark" suppressHydrationWarning>
       <head>
         {/* Preconnect to domains for faster loading */}
         <link rel="preconnect" href="https://images.pexels.com" />
         <link rel="dns-prefetch" href="https://images.pexels.com" />
 
-        {/* Add preload for critical assets */}
-        {/* <link rel="preload" href="/assets/images/myimage.jpg" as="image" /> */}
+        {/* JSON-LD structured data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
       </head>
       <body className={inter.className}>
+        {/* Skip navigation link for accessibility */}
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md"
+        >
+          Skip to main content
+        </a>
         <ClientWrapper>
           <ThemeProvider
             attribute="class"
-            defaultTheme="system"
-            enableSystem
+            defaultTheme="dark"
+            forcedTheme="dark"
             disableTransitionOnChange
           >
             <div className="min-h-screen flex flex-col">
               <Navigation />
-              <main className="flex-grow">
+              <main id="main-content" className="flex-grow">
                 {children}
               </main>
               <Footer />

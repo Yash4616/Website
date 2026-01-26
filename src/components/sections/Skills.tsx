@@ -3,8 +3,16 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Progress } from "@/components/ui/progress"
+import { Ripple } from "@/components/ui/ripple"
 import { cn } from '@/lib/utils'
+
+// Helper function to get skill level label from percentage
+function getSkillLevel(level: number): string {
+  if (level >= 90) return 'Expert'
+  if (level >= 75) return 'Advanced'
+  if (level >= 60) return 'Proficient'
+  return 'Intermediate'
+}
 
 // Define skill categories and skills
 const skillCategories = [
@@ -59,27 +67,34 @@ const skillCategories = [
 ]
 
 function SkillItem({ name, level, logo }: { name: string; level: number; logo: string }) {
+  const skillLevel = getSkillLevel(level)
+
   return (
-    <div className="mb-4">
-      <div className="flex items-center justify-between mb-2">
-        <div className="flex items-center gap-2">
-          {logo.endsWith('.svg') ? (
-            <div className="w-6 h-6 relative">
-              <Image
-                src={`/assets/icons/${logo}`}
-                alt={`${name} logo`}
-                fill
-                className="object-contain"
-              />
-            </div>
-          ) : (
-            <span className="text-xl">{logo}</span>
-          )}
-          <span className="font-medium">{name}</span>
-        </div>
-        <span className="text-sm font-medium">{level}%</span>
+    <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors">
+      <div className="flex items-center gap-3">
+        {logo.endsWith('.svg') ? (
+          <div className="w-8 h-8 relative flex-shrink-0">
+            <Image
+              src={`/assets/icons/${logo}`}
+              alt={`${name} logo`}
+              fill
+              className="object-contain"
+            />
+          </div>
+        ) : (
+          <span className="text-xl">{logo}</span>
+        )}
+        <span className="font-medium">{name}</span>
       </div>
-      <Progress value={level} className="h-2" />
+      <span className={cn(
+        "text-sm font-medium px-2.5 py-1 rounded-full",
+        skillLevel === 'Expert' && "bg-green-500/20 text-green-400",
+        skillLevel === 'Advanced' && "bg-blue-500/20 text-blue-400",
+        skillLevel === 'Proficient' && "bg-yellow-500/20 text-yellow-400",
+        skillLevel === 'Intermediate' && "bg-orange-500/20 text-orange-400",
+      )}>
+        {skillLevel}
+      </span>
     </div>
   )
 }
@@ -131,7 +146,7 @@ export default function SkillsSection() {
 
           {skillCategories.map(category => (
             <TabsContent key={category.id} value={category.id} className="mt-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {category.skills.map(skill => (
                   <SkillItem
                     key={skill.name}
@@ -149,22 +164,23 @@ export default function SkillsSection() {
           <h3 className="text-xl font-semibold text-center mb-8">Technologies I&apos;ve worked with</h3>
           <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-6">
             {technologySvgs.map((tech, i) => (
-              <div
+              <Ripple
                 key={i}
+                color="rgba(255,255,255,0.4)"
                 className={cn(
-                  "aspect-square flex items-center justify-center rounded-lg p-4",
-                  "bg-muted/50 hover:bg-muted transition-colors duration-300"
+                  "aspect-square flex items-center justify-center rounded-lg p-4 cursor-pointer",
+                  "bg-muted/50 hover:bg-muted transition-colors duration-300 hover:scale-105"
                 )}
               >
-                <div className="relative w-full h-full">
+                <div className="relative w-full h-full" title={tech.name}>
                   <Image
                     src={`/assets/icons/${tech.logo}`}
                     alt={tech.name}
                     fill
-                    className="object-contain"
+                    className="object-contain pointer-events-none"
                   />
                 </div>
-              </div>
+              </Ripple>
             ))}
           </div>
         </div>

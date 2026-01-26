@@ -9,7 +9,7 @@ export default function ContactSection() {
       title: 'Email',
       primary: 'yashgurjar9714@gmail.com',
       secondary: 'For inquiries and opportunities',
-      href: 'mailto:yashgurjar9714@gmail.com',
+      href: 'mailto:yashgurjar9714@gmail.com?subject=Portfolio%20Inquiry',
       action: 'Send Email',
     },
     {
@@ -91,7 +91,7 @@ export default function ContactSection() {
           <p className="text-muted-foreground">
             Prefer email? Reach out directly at{' '}
             <a
-              href="mailto:yashgurjar9714@gmail.com"
+              href="mailto:yashgurjar9714@gmail.com?subject=Portfolio%20Inquiry"
               className="text-primary hover:underline font-medium"
             >
               yashgurjar9714@gmail.com
