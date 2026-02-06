@@ -76,22 +76,24 @@ export default function AboutSection() {
           <div className="md:w-3/5">
             <h2 className="text-2xl font-bold tracking-tight">About Me</h2>
             <p className="mt-6 text-base leading-relaxed">
-              I&apos;m an AI and ML Engineer passionate about tackling complex challenges through innovative
-              algorithms and advanced deep learning architectures. Though early in my career, I&apos;ve
-              contributed to diverse projects spanning computer vision applications and natural language
-              processing solutions.
+              I&apos;m a Computer Science student from Jaipur with a deep fascination for how machines 
+              can learn and adapt. I spend my time between training neural networks, building web 
+              applications, and exploring the vast landscape of AI—constantly moving between theory 
+              and hands-on experimentation to understand what makes intelligent systems tick.
             </p>
 
             <p className="mt-4 leading-relaxed text-muted-foreground">
-              My fascination with AI began during my undergraduate studies, where I discovered the
-              potential of machines to mimic human intelligence. This inspired me to specialize in
-              deep learning for computer vision, launching my professional journey in the field.
+              What drives me is the creative problem-solving aspect of ML engineering—that satisfying 
+              moment when a model finally converges, when an architecture choice clicks, or when 
+              complex data reveals its patterns. I learn best by building, breaking things, and 
+              iterating until they work better than before.
             </p>
 
             <p className="mt-4 leading-relaxed text-muted-foreground">
-              Today, I focus on expanding AI&apos;s frontiers by contributing to open-source initiatives
-              and keeping pace with cutting-edge machine learning research. I&apos;m especially drawn to
-              practical applications that drive positive societal impact.
+              Beyond the technical work, I&apos;m motivated by making AI more accessible and 
+              understandable. Whether that&apos;s through teaching others, contributing to open-source, 
+              or simply sharing what I learn along the way—I believe the best way to deepen your own 
+              understanding is to help others build theirs.
             </p>
 
             <h3 className="mt-10 text-lg font-semibold">Key Strengths</h3>
