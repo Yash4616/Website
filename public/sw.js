@@ -9,7 +9,7 @@ const STATIC_ASSETS = [
   '/index.html',
   '/globals.css',
   '/myimage.jpg',
-  '/Resume.pdf',
+  '/assets/pdfs/Yash_Resume.pdf',
   // SVG icons
   '/cpp.svg',
   '/css.svg',

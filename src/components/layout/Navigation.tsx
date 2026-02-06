@@ -182,7 +182,7 @@ export default function Navigation() {
               </Button>
             </div>
             <LiquidGlassLinkButton
-              href="/assets/pdfs/Resume.pdf"
+              href="/assets/pdfs/Yash_Resume.pdf"
               download
               size="sm"
               aria-label="Download Resume (PDF)"
@@ -245,7 +245,7 @@ export default function Navigation() {
                 </Link>
               </Button>
               <LiquidGlassLinkButton
-                href="/assets/pdfs/Resume.pdf"
+                href="/assets/pdfs/Yash_Resume.pdf"
                 download
                 size="sm"
                 aria-label="Download Resume (PDF)"

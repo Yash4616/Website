@@ -9,6 +9,7 @@ import Navigation from '@/components/layout/Navigation';
 import Footer from '@/components/layout/Footer';
 import Script from 'next/script';
 import ClientWrapper from '@/providers/ClientWrapper';
+import { Analytics } from "@vercel/analytics/next"
 
 // Optimize font loading by defining display strategy
 const inter = Inter({
@@ -144,6 +145,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
             `
           }}
         />
+        <Analytics />
       </body>
     </html>
   );

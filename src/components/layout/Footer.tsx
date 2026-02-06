@@ -74,7 +74,7 @@ export default function Footer() {
             <ul className="space-y-2">
               <li>
                 <Button variant="link" size="sm" className="h-auto p-0" asChild>
-                  <Link href="/assets/pdfs/Resume.pdf" download className="flex items-center gap-1" aria-label="Download Resume (PDF)">
+                  <Link href="/assets/pdfs/Yash_Resume.pdf" download className="flex items-center gap-1" aria-label="Download Resume (PDF)">
                     <FiDownload className="h-4 w-4" aria-hidden="true" />
                     <span>Download Resume</span>
                   </Link>
