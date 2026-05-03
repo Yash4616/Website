@@ -126,6 +126,11 @@ export default function RootLayout({ children }: RootLayoutProps) {
           >
             <div className="min-h-screen flex flex-col">
               <Navigation />
+              {process.env.NODE_ENV !== 'production' ? (
+                <div className="fixed bottom-4 right-4 z-[100] rounded-md border border-border/60 bg-background/90 px-3 py-2 text-xs text-muted-foreground shadow-lg backdrop-blur">
+                  Dev mode: service worker disabled
+                </div>
+              ) : null}
               <main id="main-content" className="flex-grow">
                 {children}
               </main>
@@ -139,9 +144,24 @@ export default function RootLayout({ children }: RootLayoutProps) {
           dangerouslySetInnerHTML={{
             __html: `
               if ('serviceWorker' in navigator) {
-                window.addEventListener('load', function() {
-                  navigator.serviceWorker.register('/sw.js').catch(function() {});
-                });
+                if (process.env.NODE_ENV === 'production') {
+                  window.addEventListener('load', function() {
+                    navigator.serviceWorker.register('/sw.js').catch(function() {});
+                  });
+                } else {
+                  navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                    registrations.forEach(function(registration) {
+                      registration.unregister();
+                    });
+                  });
+                  if ('caches' in window) {
+                    caches.keys().then(function(keys) {
+                      keys
+                        .filter(function(key) { return key.startsWith('yash-portfolio-cache-'); })
+                        .forEach(function(key) { caches.delete(key); });
+                    });
+                  }
+                }
               }
             `
           }}

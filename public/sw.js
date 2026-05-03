@@ -1,6 +1,6 @@
 // Service Worker for Yash Gurjar's portfolio
 // Security hardened version with explicit caching rules
-const CACHE_VERSION = 'v2';
+const CACHE_VERSION = 'v3';
 const CACHE_NAME = `yash-portfolio-cache-${CACHE_VERSION}`;
 
 // Only cache static assets - no dynamic or sensitive content
@@ -38,10 +38,14 @@ const STATIC_ASSETS = [
 
 // File extensions that are safe to cache
 const CACHEABLE_EXTENSIONS = ['.html', '.css', '.js', '.svg', '.png', '.jpg', '.jpeg', '.webp', '.woff', '.woff2'];
+const NEXT_ASSET_PREFIX = '/_next/';
 
 // Check if a request should be cached
 function shouldCache(url) {
   const urlPath = new URL(url).pathname;
+  if (urlPath.startsWith(NEXT_ASSET_PREFIX)) {
+    return false;
+  }
   return CACHEABLE_EXTENSIONS.some(ext => urlPath.endsWith(ext)) || urlPath === '/';
 }
 
@@ -67,6 +71,11 @@ self.addEventListener('fetch', event => {
     requestUrl.hostname === 'images.pexels.com';
   
   if (!isAllowedOrigin) {
+    return;
+  }
+
+  // Never cache or intercept Next.js build assets
+  if (requestUrl.pathname.startsWith(NEXT_ASSET_PREFIX)) {
     return;
   }
 

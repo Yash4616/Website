@@ -9,87 +9,9 @@ import { Card, CardContent, CardFooter } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { FaGithub, FaStar } from 'react-icons/fa'
 import { FiExternalLink } from 'react-icons/fi'
-
-// Define project categories and projects
-const projectCategories = [
-  { id: 'all', name: 'All Projects' },
-  { id: 'ml', name: 'Machine Learning' },
-  { id: 'computer-vision', name: 'Computer Vision' },
-  // { id: 'nlp', name: 'NLP' },
-  { id: 'web', name: 'Web Development' },
-]
-
-// Move projects to a separate constant to improve readability
-const projects = [
-  {
-    id: 1,
-    title: 'ResNet18-CIFAR10-Classifier',
-    description: 'High-accuracy image classifier using ResNet18 architecture and advanced augmentation techniques for CIFAR-10 dataset.',
-    image: 'https://images.pexels.com/photos/2653362/pexels-photo-2653362.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
-    categories: ['ml', 'computer-vision'],
-    technologies: ['TensorFlow', 'Python', 'Matplotlib'],
-    repoUrl: 'https://github.com/Yash4616/ResNet18-CIFAR10-Classifier',
-    demoUrl: 'https://github.com/Yash4616/ResNet18-CIFAR10-Classifier/blob/main/README.md',
-    stars: 2,
-  },
-  {
-    id: 2,
-    title: 'Computer Vision',
-    description: 'A collection of computer vision models and utilities, including image classification, object detection, and image processing pipelines.',
-    image: 'https://images.pexels.com/photos/3103199/pexels-photo-3103199.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&dpr=1',
-    categories: ['ml', 'computer-vision'],
-    technologies: ['PyTorch', 'Numpy', 'openCV'],
-    repoUrl: 'https://github.com/Yash4616/Computer-Vision.git',
-    demoUrl: 'https://github.com/Yash4616/Computer-Vision#readme',
-    stars: 0,
-  },
-  // {
-  //   id: 3,
-  //   title: 'AI Research Dashboard',
-  //   description: 'Interactive dashboard for tracking and visualizing AI research papers and trends.',
-  //   image: 'https://images.pexels.com/photos/669615/pexels-photo-669615.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&dpr=1',
-  //   categories: ['web', 'ml'],
-  //   technologies: ['Next.js', 'TypeScript', 'D3.js', 'MongoDB'],
-  //   repoUrl: 'https://github.com',
-  //   demoUrl: 'https://example.com',
-  //   stars: 62,
-  // },
-  // {
-  //   id: 4,
-  //   title: 'Object Detection System',
-  //   description: 'Real-time object detection system for video streams with high accuracy and low latency.',
-  //   image: 'https://images.pexels.com/photos/5473337/pexels-photo-5473337.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&dpr=1',
-  //   categories: ['ml', 'computer-vision'],
-  //   technologies: ['YOLO', 'OpenCV', 'Python', 'CUDA'],
-  //   repoUrl: 'https://github.com',
-  //   demoUrl: 'https://example.com',
-  //   stars: 124,
-  // },
-  // {
-  //   id: 5,
-  //   title: 'Speech Recognition Tool',
-  //   description: 'A tool for transcribing and analyzing speech in multiple languages.',
-  //   image: 'https://images.pexels.com/photos/5702281/pexels-photo-5702281.jpeg?auto=compress&cs=tinysrgb&w=600&h=400&dpr=1',
-  //   categories: ['ml', 'nlp'],
-  //   technologies: ['Wav2Vec', 'PyTorch', 'Python', 'React'],
-  //   repoUrl: 'https://github.com',
-  //   demoUrl: 'https://example.com',
-  //   stars: 95,
-  // },
-  {
-    id: 6,
-    title: 'Portfolio Website',
-    description: 'Modern, responsive portfolio website built with Next.js and Tailwind CSS.',
-    image: '/assets/images/website.png',
-    categories: ['web'],
-    technologies: ['Next.js', 'TypeScript', 'Tailwind CSS', 'Framer Motion'],
-    repoUrl: 'https://github.com/Yash4616/Website.git',
-    demoUrl: 'https://example.com',
-    stars: 0,
-  },
-]
-
-function ProjectCard({ project }: { project: typeof projects[0] }) {
+import { getProjectsByCategory, projectCategories } from '@/data/projects'
+import type { Project } from '@/types'
+function ProjectCard({ project }: { project: Project }) {
   return (
     <Card className="overflow-hidden transition-all duration-300 hover:shadow-md">
       <div className="relative h-48 w-full overflow-hidden">
@@ -129,12 +51,14 @@ function ProjectCard({ project }: { project: typeof projects[0] }) {
               Code
             </Link>
           </Button>
-          <Button variant="outline" size="sm" asChild>
-            <Link href={project.demoUrl} target="_blank" rel="noopener noreferrer">
-              <FiExternalLink className="h-4 w-4 mr-1" />
-              Demo
-            </Link>
-          </Button>
+          {project.demoUrl ? (
+            <Button variant="outline" size="sm" asChild>
+              <Link href={project.demoUrl} target="_blank" rel="noopener noreferrer">
+                <FiExternalLink className="h-4 w-4 mr-1" />
+                Demo
+              </Link>
+            </Button>
+          ) : null}
         </div>
       </CardFooter>
     </Card>
@@ -143,7 +67,7 @@ function ProjectCard({ project }: { project: typeof projects[0] }) {
 
 export default function ProjectsSection() {
   const [activeCategory, setActiveCategory] = useState('all')
-  const [visibleProjects, setVisibleProjects] = useState<typeof projects>([])
+  const [visibleProjects, setVisibleProjects] = useState<Project[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
   // Filter projects based on active category
@@ -152,9 +76,7 @@ export default function ProjectsSection() {
 
     // Small delay to prevent UI jank during tab changes
     const timer = setTimeout(() => {
-      const filtered = activeCategory === 'all'
-        ? projects
-        : projects.filter(project => project.categories.includes(activeCategory))
+      const filtered = getProjectsByCategory(activeCategory)
 
       setVisibleProjects(filtered)
       setIsLoading(false)

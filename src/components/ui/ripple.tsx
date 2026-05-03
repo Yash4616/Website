@@ -27,7 +27,6 @@ export function Ripple({
     disabled = false,
 }: RippleProps) {
     const containerRef = useRef<HTMLDivElement>(null)
-    const rippleIdRef = useRef(0)
 
     const createRipple = useCallback((event: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
         if (disabled) return
