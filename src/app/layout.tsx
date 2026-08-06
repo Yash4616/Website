@@ -122,6 +122,17 @@ export default function RootLayout({ children }: RootLayoutProps) {
     // there is no theme runtime, no toggle, and no light variant (A7, AP-1).
     <html lang="en" className={`dark ${inter.variable} ${jetbrainsMono.variable}`}>
       <head>
+        {/*
+          Blocking, pre-paint. Marks <html> when the boot sequence has already
+          played this session so the CSS rule in globals.css hides the loader
+          before it renders a single frame. Deliberately not `next/script` —
+          this must execute before first paint, and it is ~90 bytes.
+        */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{if(sessionStorage.getItem('yash:booted')==='1')document.documentElement.setAttribute('data-booted','1')}catch(e){}`,
+          }}
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

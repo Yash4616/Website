@@ -528,8 +528,11 @@ export const siteConfig: SiteConfig = {
     {
       id: 'computer-vision',
       title: 'Vision Detection Systems',
+      // A18 — describes the work plainly as integration. An accurate description
+      // of wiring pretrained models into a working pipeline is credible; a vague
+      // one that lets a reader assume training happened is not.
       description:
-        'A computer vision toolkit pairing YOLOv8-based person detection with OpenCV Haar-cascade face detection, running on webcam input or video files with real-time annotated output.',
+        'An applied toolkit built around pretrained detectors — YOLOv8 for person detection and OpenCV Haar cascades for face detection — wired into a pipeline that runs on webcam or video files with annotated real-time output. Integration work; no models were trained here.',
       category: 'computer-vision',
       tags: ['YOLOv8', 'OpenCV', 'Detection', 'Real-time'],
       stack: ['Python', 'OpenCV', 'YOLOv8', 'Ultralytics', 'PyTorch', 'NumPy'],
@@ -546,6 +549,29 @@ export const siteConfig: SiteConfig = {
       image: null,
       // Applied toolkit built on pretrained detectors — nothing was trained here,
       // so there is no model card to present. Claiming one would be dishonest.
+      modelCard: null,
+    },
+
+    {
+      // A17 — added on the strength of what is actually in the repo: daemon
+      // worker threads, a 10,000-step buffer cap, a 60s hard timeout, a reaper
+      // thread, run-ID-seeded deterministic generation, and a guarded 7-state
+      // frontend machine. That is engineering, not a class exercise.
+      id: 'sorting-visualizer',
+      title: 'Sorting Visualizer',
+      description:
+        'A full-stack sorting visualizer where a Flask backend runs each sort in a daemon worker thread and streams its steps through a polling API, and a TypeScript canvas frontend replays them through a guarded state machine with backpressure handling.',
+      category: 'web-development',
+      tags: ['Algorithms', 'Canvas', 'Concurrency', 'State Machine'],
+      stack: ['Python', 'Flask', 'Waitress', 'TypeScript', 'Vite', 'HTML Canvas'],
+      architecture: 'Threaded run manager + cursor-paginated polling API + RAF renderer',
+      metrics: null, // Not a benchmarked system — no measured numbers to claim.
+      language: 'Python',
+      stars: 0, // as of 2026-08-06
+      forks: 0, // as of 2026-08-06
+      featured: false,
+      links: { github: `${GITHUB_USER}/Sorting_Visualizer` },
+      image: null,
       modelCard: null,
     },
 

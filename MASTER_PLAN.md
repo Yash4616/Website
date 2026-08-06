@@ -34,6 +34,19 @@ same authority as the original text. Each one is applied inline in the section n
 | A15 | D8, project data | ResNet18's README F1 of **98.62 % is arithmetically impossible** from its own Precision 91.16 % / Recall 85.35 % (true F1 ≈ 88.16 %). **F1 is omitted**; Accuracy / Precision / Recall / Loss are published. | D8 and AP-12. A number a recruiter can disprove with a calculator is worse than no number. |
 | A16 | §7/Stage 6 | **Featured three: `tokenizer`, `Object_Detection_Semantic_Segmentation`, `Rag`.** ResNet18 stays in the grid (with its confusion matrix) but is **not** featured. | ResNet18-on-CIFAR-10 is the most common student project there is, and 88.22 % sits below the ~94–95 % ResNet18 baseline — featuring it invites that comparison. A Rust BPE tokenizer at parity with `o200k_base` and a local RAG with real recall@k are work most students never attempt. Lead with the rare thing. |
 
+### v3.2 — 2026-08-06 (approved at the Stage 1 → Stage 2 boundary)
+
+| # | Section(s) amended | Change | Rationale |
+|---|---|---|---|
+| A17 | §7/Stage 6, project roster | **`Sorting_Visualizer` added — the roster is now 7 cards.** | Its README documents daemon worker threads, a 10,000-step buffer cap, a 60 s hard timeout, a reaper thread, run-ID-seeded deterministic generation, and a guarded 7-state frontend machine with retry backoff. That is engineering, not a class exercise. |
+| A18 | project roster | **`Computer-Vision`'s description rewritten** to state plainly that it is an applied toolkit around pretrained YOLOv8 and Haar cascades. `modelCard` stays `null`. | An accurate description of integration work is credible. A vague one that lets a reader assume training happened is not — and is the exact failure D8 exists to prevent. |
+| A19 | §5.2, §7/Stage 6 | **`Project.language` is never surfaced on a card or detail page.** It is retained in the data verbatim from the API (D7) and used only for JSON-LD `programmingLanguage`. | GitHub's linguist counts bytes, so `tokenizer` reports "Python" for a project whose engine is Rust. `stack` leads with the real answer and is strictly more informative. |
+| A20 | §4.3, globals.css | **`html { font-size: 90% }` removed.** Root inherits the browser default. | It rendered the entire Neural Dark type scale 10 % small, so §4.3 would have been tuned against a wrong baseline for six stages. It also overrides a visitor's own font-size preference — an a11y smell. Measured fallout: every type size **+11.1 %**, page height **+5.4 %**, no new overflow. |
+| A21 | §7/Stage 6, §8.1/S3 | **`<ConfusionMatrix>` renders only when `project.modelCard.confusion` is present**, and the card degrades cleanly when it is not. Stage 6 does **not** block on it. | The matrix must come from a real eval run on the saved model. It will be supplied before Stage 6 closes. It is explicitly **not** to be derived from `Object_Detection`'s `confusion_matrix.png` — reading numbers off a rendered image is fabrication with extra steps. |
+| A23 | §7/Stage 2 | ⚠️ **NEEDS SIGN-OFF.** The loader gate lives in `components/features/boot-gate.tsx`, mounted at the root by `ClientWrapper`, **not** in `page.tsx`. | §7 Stage 2 asks for the gate in `page.tsx` *and* the cursor "at root". Both need the same `isLoaded` boolean, so splitting them costs a context or a custom event for one flag. Mounting both at the root keeps it to one piece of state and makes the cursor work on `/projects/[slug]` too. **Side effect:** the boot sequence also plays on a deep link to a project page (once per session). |
+| A24 | §7/Stage 2, §11.1 | The return-visit skip is enforced by a **blocking pre-paint script** in `<head>` that sets `data-booted="1"`, plus a CSS rule, rather than by a React mounted-check alone. | A mounted check alone only moves the flash: it stops the loader appearing on a return visit but introduces a flash of bare content before the loader on a *first* visit, since nothing renders until an effect runs. The pre-paint attribute lets the server always render the loader — so SSR and first client render stay identical, no hydration mismatch — while the return visit hides it before a single frame paints. **Measured:** first visit `display: block`; return visit `display: none` at mount, zero lines ever rendered. |
+| A22 | §6.2 | **The old shadcn toast system is deleted** (`ui/toast.tsx`, `ui/toaster.tsx`, `hooks/use-toast.ts`) and `@radix-ui/react-toast` uninstalled. **`sonner` is the site's only toast library**, used by the Stage 7 "Copied ✓" pill. `next-themes` uninstalled; `ui/sonner.tsx` hardcodes `theme="dark"`. | Two toast systems, both unmounted, one of them the only remaining reason `next-themes` was installed. Resolves the A7 blocker. |
+
 ---
 
 ## CONTENTS
@@ -512,6 +525,12 @@ section components already anchored on the single page:
 **Added by A8 — config (Stage 1).**
 
 - `next.config.js` and `next.config.analyzer.js`, both replaced by `next.config.ts`.
+
+**Added by A22 — duplicate toast system (Stage 2).** Resolves the A7 blocker.
+
+- `src/components/ui/toast.tsx`, `src/components/ui/toaster.tsx`, `src/hooks/use-toast.ts`
+- `npm uninstall @radix-ui/react-toast next-themes`
+- `src/components/ui/sonner.tsx` **stays** — it is the site's only toast library.
 
 ### 6.3 Nothing else gets deleted. If you think something else should go, ask first.
 

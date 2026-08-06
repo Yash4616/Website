@@ -90,7 +90,14 @@ export interface Project {
   architecture: string | null;
   /** Card-front summary metrics. Null for non-ML projects; never fabricated (D8). */
   metrics: ProjectMetric[] | null;
-  /** Primary GitHub language, as reported by the API. */
+  /**
+   * Primary GitHub language, verbatim from the API (D7).
+   *
+   * A19 — NEVER surfaced on a card or detail page. GitHub's linguist counts
+   * bytes, so `tokenizer` reports "Python" for a project whose engine is Rust.
+   * `stack` is strictly more informative and leads with the real answer. This
+   * field exists only for structured metadata (JSON-LD `programmingLanguage`).
+   */
   language: string | null;
   stars: number;
   forks: number;

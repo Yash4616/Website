@@ -85,10 +85,26 @@
   }
 
   html {
-    /* TODO(Stage 8): this 90% base predates the Neural Dark type scale and
-       shrinks every rem on the page. Revisit once the sections are rebuilt. */
-    font-size: 90%;
+    /*
+     * A20 — the previous `font-size: 90%` was removed here.
+     *
+     * It silently rendered the entire Neural Dark type scale 10% smaller than
+     * specified, so every size in §4.3 would have been tuned against a wrong
+     * baseline for six more stages. It also scales down a visitor's own browser
+     * font-size preference, which is an accessibility smell: someone who has set
+     * a larger default has explicitly asked for larger text, and a percentage
+     * base quietly overrides that intent.
+     *
+     * The root now inherits the browser default (16px unless the user changed it).
+     */
     color-scheme: dark;
+    scroll-behavior: smooth; /* D2 — native smooth scroll, no scroll-jacking library. */
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
   }
 
   html,
@@ -133,6 +149,16 @@
       transparent 40%,
       rgba(0, 0, 0, 0.55) 100%
     );
+  }
+
+  /*
+   * Return-visit boot skip. The blocking script in layout.tsx <head> sets
+   * data-booted="1" before first paint, so on a repeat visit the loader is
+   * hidden without ever painting a frame — no flash, and no hydration mismatch,
+   * because the server and client still render identical markup.
+   */
+  html[data-booted='1'] [data-boot-loader] {
+    display: none !important;
   }
 
   /* ── Focus (§13.2, AP-13) ─────────────────────────────────────────────────
