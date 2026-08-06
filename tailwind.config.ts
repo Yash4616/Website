@@ -36,6 +36,19 @@ const config: Config = {
       '3xl': '1920px',    // Ultra-wide (Backgrounds only)
     },
     extend: {
+      // Neural Dark tokens (§4.1) — every value maps to a CSS custom property
+      // declared in globals.css. Use these, not arbitrary hex values (§3.2).
+      fontFamily: {
+        sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
+        mono: ['var(--font-mono)', 'ui-monospace', 'monospace'],
+      },
+      maxWidth: {
+        content: '1400px', // §4.3
+      },
+      boxShadow: {
+        'glow-cyan': 'var(--glow-cyan)',
+        'glow-violet': 'var(--glow-violet)',
+      },
       // Fluid Typography System - 2025 Standard
       fontSize: {
         xs: 'clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem)',        // 12px -> 14px
@@ -54,6 +67,7 @@ const config: Config = {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic':
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+        'gradient-accent': 'var(--gradient-accent)', // §4.1
       },
       borderRadius: {
         lg: 'var(--radius)',
@@ -101,6 +115,36 @@ const config: Config = {
           '4': 'hsl(var(--chart-4))',
           '5': 'hsl(var(--chart-5))',
         },
+        // Neural Dark palette (§4.1). Two accents plus amber for the
+        // "Proficient" tier — there is no fourth colour anywhere.
+        void: 'var(--bg-void)',
+        surface: {
+          DEFAULT: 'var(--bg-surface)',
+          primary: 'var(--bg-primary)',
+          elevated: 'var(--bg-elevated)',
+          overlay: 'var(--bg-overlay)',
+        },
+        content: {
+          primary: 'var(--text-primary)',
+          secondary: 'var(--text-secondary)',
+          muted: 'var(--text-muted)',
+          inverse: 'var(--text-inverse)',
+        },
+        cyan: {
+          accent: 'var(--accent-cyan)',
+        },
+        violet: {
+          accent: 'var(--accent-violet)',
+        },
+        amber: {
+          accent: 'var(--accent-amber)',
+        },
+        edge: {
+          subtle: 'var(--border-subtle)',
+          DEFAULT: 'var(--border-default)',
+          hover: 'var(--border-hover)',
+          accent: 'var(--border-accent)',
+        },
       },
       keyframes: {
         'accordion-down': {
@@ -119,10 +163,43 @@ const config: Config = {
             height: '0',
           },
         },
+        // §7 Stage 1 deliverable 5. These run on the compositor — transform and
+        // opacity only, never a layout-triggering property (§9.3).
+        orbit: {
+          from: { transform: 'rotate(0deg)' },
+          to: { transform: 'rotate(360deg)' },
+        },
+        'pulse-glow': {
+          '0%, 100%': {
+            opacity: '1',
+            boxShadow: '0 0 20px rgba(0,240,255,0.40), 0 0 60px rgba(0,240,255,0.10)',
+          },
+          '50%': {
+            opacity: '0.75',
+            boxShadow: '0 0 30px rgba(0,240,255,0.55), 0 0 80px rgba(0,240,255,0.18)',
+          },
+        },
+        blink: {
+          '0%, 49%': { opacity: '1' },
+          '50%, 100%': { opacity: '0' },
+        },
+        'fade-up': {
+          from: { opacity: '0', transform: 'translateY(40px)' },
+          to: { opacity: '1', transform: 'translateY(0)' },
+        },
+        scan: {
+          from: { transform: 'translateY(-100%)' },
+          to: { transform: 'translateY(100%)' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
+        orbit: 'orbit 30s linear infinite',
+        'pulse-glow': 'pulse-glow 3s ease-in-out infinite',
+        blink: 'blink 1s step-end infinite',
+        'fade-up': 'fade-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) both',
+        scan: 'scan 8s linear infinite',
       },
     },
   },

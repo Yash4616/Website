@@ -1,64 +1,73 @@
-interface RootLayoutProps {
-  children: React.ReactNode;
-}
 import './globals.css';
 import type { Metadata, Viewport } from 'next';
-import { Inter } from 'next/font/google';
-import { ThemeProvider } from '@/providers/theme-provider';
+import { Inter, JetBrains_Mono } from 'next/font/google';
 import Navigation from '@/components/layout/Navigation';
 import Footer from '@/components/layout/Footer';
 import Script from 'next/script';
 import ClientWrapper from '@/providers/ClientWrapper';
-import { Analytics } from "@vercel/analytics/next"
-import { SpeedInsights } from "@vercel/speed-insights/next"
+import { Analytics } from '@vercel/analytics/next';
+import { SpeedInsights } from '@vercel/speed-insights/next';
+import { siteConfig } from '@/data/config';
 
-// Optimize font loading by defining display strategy
+interface RootLayoutProps {
+  children: React.ReactNode;
+}
+
+// D3 — Inter stays. Zero churn, already loaded, excellent at display sizes.
 const inter = Inter({
   subsets: ['latin'],
-  display: 'swap', // Use 'swap' to prevent FOIT (Flash of Invisible Text)
+  display: 'swap',
   preload: true,
+  variable: '--font-sans',
+});
+
+// D4 — JetBrains Mono. Chosen over Geist Mono for readability at 12–14px, which
+// is exactly where the loader and terminal live.
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ['latin'],
+  display: 'swap',
+  preload: true,
+  variable: '--font-mono',
 });
 
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   viewportFit: 'cover',
-  themeColor: '#0a0a0a',
+  themeColor: '#030303',
 };
 
+// §11.2. Note: og:image and twitter:image are NOT declared here — they are
+// produced by the app/opengraph-image.tsx file convention (A12), which Next
+// injects automatically. Declaring them in both places emits duplicate tags.
 export const metadata: Metadata = {
+  metadataBase: new URL(siteConfig.meta.url),
   title: {
-    default: 'Yash Gurjar | AI & ML Engineer',
+    default: siteConfig.meta.title,
     template: '%s | Yash Gurjar',
   },
-  description: 'Portfolio of Yash Gurjar, AI & ML Engineer specializing in Computer Vision, Neural Networks, Deep Learning, and TensorFlow. Building intelligent solutions for tomorrow\'s challenges.',
-  keywords: ['AI Engineer', 'ML Engineer', 'Machine Learning', 'Computer Vision', 'Deep Learning', 'TensorFlow', 'PyTorch', 'Neural Networks', 'Portfolio', 'Jaipur', 'Rajasthan', 'India'],
-  authors: [{ name: 'Yash Gurjar', url: 'https://yash.systems' }],
+  description: siteConfig.meta.description,
+  keywords: siteConfig.meta.keywords,
+  authors: [{ name: 'Yash Gurjar', url: siteConfig.meta.url }],
   creator: 'Yash Gurjar',
   manifest: '/manifest.json',
-  metadataBase: new URL('https://yash.systems'),
+  alternates: {
+    canonical: siteConfig.meta.url,
+  },
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://yash.systems',
+    url: siteConfig.meta.url,
     siteName: 'Yash Gurjar Portfolio',
-    title: 'Yash Gurjar | AI & ML Engineer',
-    description: 'Portfolio of Yash Gurjar, AI & ML Engineer specializing in Computer Vision, Neural Networks, and Deep Learning.',
-    images: [
-      {
-        url: '/og-image.png',
-        width: 1200,
-        height: 630,
-        alt: 'Yash Gurjar - AI & ML Engineer',
-      },
-    ],
+    title: 'Yash Gurjar — AI & ML Engineer',
+    description:
+      'Building intelligent solutions through AI/ML algorithms and deep learning architectures.',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Yash Gurjar | AI & ML Engineer',
-    description: 'Portfolio of Yash Gurjar, AI & ML Engineer specializing in Computer Vision and Deep Learning.',
+    title: 'Yash Gurjar — AI & ML Engineer',
+    description: 'Computer Vision · Neural Networks · TensorFlow · PyTorch',
     creator: '@Yash_9724',
-    images: ['/og-image.png'],
   },
   robots: {
     index: true,
@@ -73,20 +82,25 @@ export const metadata: Metadata = {
   },
 };
 
-// JSON-LD structured data for SEO
+// JSON-LD Person schema (§11.2), driven from config so it cannot drift.
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Person',
-  name: 'Yash Gurjar',
-  jobTitle: 'AI & ML Engineer',
-  url: 'https://yash.systems',
-  email: 'yashgurjar9714@gmail.com',
-  sameAs: [
-    'https://github.com/Yash4616',
-    'https://linkedin.com/in/yashgurjar9',
-    'https://x.com/Yash_9724',
+  name: siteConfig.hero.name,
+  jobTitle: siteConfig.hero.title,
+  url: siteConfig.meta.url,
+  email: siteConfig.contact.email,
+  alumniOf: {
+    '@type': 'CollegeOrUniversity',
+    name: 'JECRC University',
+  },
+  sameAs: siteConfig.social.map((link) => link.href),
+  knowsAbout: [
+    'Artificial Intelligence',
+    'Machine Learning',
+    'Computer Vision',
+    'Deep Learning',
   ],
-  knowsAbout: ['Machine Learning', 'Computer Vision', 'Deep Learning', 'TensorFlow', 'PyTorch', 'Neural Networks'],
   address: {
     '@type': 'PostalAddress',
     addressLocality: 'Jaipur',
@@ -96,20 +110,24 @@ const jsonLd = {
 };
 
 export default function RootLayout({ children }: RootLayoutProps) {
-  return (
-    <html lang="en" className="dark" suppressHydrationWarning>
-      <head>
-        {/* Preconnect to domains for faster loading */}
-        <link rel="preconnect" href="https://images.pexels.com" />
-        <link rel="dns-prefetch" href="https://images.pexels.com" />
+  // Resolved on the server. It must NOT appear as `process.env.NODE_ENV` inside
+  // the inline script below: that string is injected verbatim via
+  // dangerouslySetInnerHTML, so Next's build-time substitution never touches it
+  // and the browser throws `ReferenceError: process is not defined` on every
+  // load. Interpolating the resolved boolean is the fix.
+  const isProduction = process.env.NODE_ENV === 'production';
 
-        {/* JSON-LD structured data */}
+  return (
+    // D9 — dark is the only theme. `className="dark"` is set statically here;
+    // there is no theme runtime, no toggle, and no light variant (A7, AP-1).
+    <html lang="en" className={`dark ${inter.variable} ${jetbrainsMono.variable}`}>
+      <head>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className={inter.className}>
+      <body className="font-sans">
         {/* Skip navigation link for accessibility */}
         <a
           href="#main-content"
@@ -118,25 +136,18 @@ export default function RootLayout({ children }: RootLayoutProps) {
           Skip to main content
         </a>
         <ClientWrapper>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="dark"
-            forcedTheme="dark"
-            disableTransitionOnChange
-          >
-            <div className="min-h-screen flex flex-col">
-              <Navigation />
-              {process.env.NODE_ENV !== 'production' ? (
-                <div className="fixed bottom-4 right-4 z-[100] rounded-md border border-border/60 bg-background/90 px-3 py-2 text-xs text-muted-foreground shadow-lg backdrop-blur">
-                  Dev mode: service worker disabled
-                </div>
-              ) : null}
-              <main id="main-content" className="flex-grow">
-                {children}
-              </main>
-              <Footer />
-            </div>
-          </ThemeProvider>
+          <div className="min-h-screen flex flex-col">
+            <Navigation />
+            {!isProduction ? (
+              <div className="fixed bottom-4 right-4 z-[100] rounded-md border border-border/60 bg-background/90 px-3 py-2 text-xs text-muted-foreground shadow-lg backdrop-blur">
+                Dev mode: service worker disabled
+              </div>
+            ) : null}
+            <main id="main-content" className="flex-grow">
+              {children}
+            </main>
+            <Footer />
+          </div>
         </ClientWrapper>
         <Script
           id="register-sw"
@@ -144,7 +155,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           dangerouslySetInnerHTML={{
             __html: `
               if ('serviceWorker' in navigator) {
-                if (process.env.NODE_ENV === 'production') {
+                if (${isProduction}) {
                   window.addEventListener('load', function() {
                     navigator.serviceWorker.register('/sw.js').catch(function() {});
                   });
@@ -163,7 +174,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
                   }
                 }
               }
-            `
+            `,
           }}
         />
         <Analytics />
