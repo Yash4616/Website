@@ -1,645 +1,405 @@
-import type { SiteConfig } from '@/types';
+import { validateConfig } from '@/data/schema';
 
 /**
- * THE single source of content for yash.systems (MASTER_PLAN.md §5.1).
+ * THE single source of content for yash.systems — REBUILD.md §6.
  *
- * No user-facing string, URL, number, or array literal belongs in a component.
- * Adding a project, changing the bio, or swapping a social link means editing
- * this file and nothing else.
+ * ── Provenance ───────────────────────────────────────────────────────────────
+ * Every metric is ported unchanged from `src/data/config.ts` at commit
+ * `33b0a6d`, where it was sourced from the GitHub API (2026-08-06) and each
+ * repository's own README. That work is fact, not design. The shape changed to
+ * suit a document; no number did.
  *
- * ── Data provenance (D7 / D8 / AP-12) ────────────────────────────────────────
- * Every star count, fork count, metric, and architecture name below was read
- * from the GitHub API or from the repo's own README on 2026-08-06. Nothing is
- * estimated, rounded up, or filled in from memory.
+ * Rules carried forward verbatim (§6):
+ *   · Every metric traces to a repo README or code. Nothing estimated.
+ *   · ResNet18's README F1 of 98.62% stays EXCLUDED — arithmetically impossible
+ *     from its own precision (91.16%) and recall (85.35%), which give ≈88.16%.
+ *     It is named in the limitations line rather than published as a result.
+ *   · Star and fork counts were all zero, so they are omitted entirely. The
+ *     schema has no field for them, so they cannot creep back.
+ *   · Seven projects. Featured: tokenizer · detection+segmentation · local RAG.
  *
- * Star/fork counts are a snapshot, marked `as of 2026-08-06`. Stage 6 hides the
- * star/fork row entirely when both are 0 (A13) — which is currently every card.
- *
- * `metrics: null` and `modelCard: null` mean the repo does not verifiably state
- * those numbers. They do NOT mean zero, and they must never be backfilled with
- * plausible-looking values.
+ * Validated by zod at module scope, so a malformed entry fails `next build`.
  */
 
 const SITE_URL = 'https://www.yash.systems';
-const GITHUB_USER = 'https://github.com/Yash4616';
+const GH = 'https://github.com/Yash4616';
 
-export const siteConfig: SiteConfig = {
+export const siteConfig = validateConfig({
   meta: {
-    title: 'Yash Gurjar — AI & ML Engineer | Computer Vision & Deep Learning',
+    title: 'Yash Gurjar — AI & ML Engineer',
     description:
-      'Portfolio of Yash Gurjar, an AI & ML Engineer from Jaipur specializing in Computer Vision, Neural Networks, TensorFlow, and PyTorch. Building intelligent solutions.',
-    keywords: [
-      'Yash Gurjar',
-      'AI Engineer',
-      'ML Engineer',
-      'Computer Vision Developer',
-      'Deep Learning',
-      'TensorFlow',
-      'PyTorch',
-      'Jaipur',
-      'Machine Learning Portfolio',
-      'Neural Networks',
-      'JECRC University',
-    ],
+      'Tokenizers, retrieval systems, and vision pipelines. Machine learning engineering by Yash Gurjar, JECRC University, Jaipur.',
     url: SITE_URL,
-    // Generated at build time by src/app/opengraph-image.tsx (A12).
-    ogImage: '/opengraph-image',
   },
 
-  hero: {
+  masthead: {
     name: 'Yash Gurjar',
-    title: 'AI & ML Engineer',
-    typewriterPrefix: 'Specializing in ',
-    typewriterWords: [
-      'Computer Vision',
-      'Neural Networks',
-      'Deep Learning',
-      'TensorFlow',
-      'PyTorch',
-    ],
-    primaryCta: { label: 'View Projects ↗', href: '#projects' },
-    secondaryCta: {
-      label: 'Download Resume',
-      href: '/assets/pdfs/Yash_Resume.pdf',
-    },
-    scrollHint: 'Scroll to explore',
+    role: 'AI & ML Engineer',
+    institution: 'JECRC University · Jaipur, IN',
+    // §8.3 — "Nowhere does the site say what Yash is looking for." It does now.
+    availability: 'Available from 2027 · Research or applied ML · Remote or Jaipur',
+    revision: 'REV 3.0',
   },
 
-  about: {
-    // §5.4 — condensed. Do not rewrite these longer.
-    bio: [
-      "I'm a Computer Science student from Jaipur with a deep fascination for how machines learn and adapt. I spend my time training neural networks, building web applications, and exploring the vast landscape of AI — constantly moving between theory and hands-on experimentation.",
-      'What drives me is the creative problem-solving side of ML engineering — that moment when a model finally converges, when complex data reveals its patterns. I learn best by building, breaking things, and iterating until they work better than before.',
-    ],
-    avatar: '/assets/images/myimage.jpg',
-    education: [
-      {
-        degree: 'B.Tech — CSE (AI & ML specialization, IBM)',
-        institution: 'JECRC University, Jaipur',
-        start: 2023,
-        end: 2027,
-      },
-      {
-        degree: 'High School',
-        institution: 'Alwar Public School',
-        start: 2009,
-        end: 2022,
-      },
-    ],
-    strengths: [
-      {
-        title: 'Deep Learning Expert',
-        description:
-          'Trains and evaluates CNNs end to end — ResNet, U-Net, YOLO — in both TensorFlow and PyTorch.',
-        icon: 'brain',
-      },
-      {
-        title: 'Production-Ready Code',
-        description:
-          'Typed interfaces, test suites, CI, and reproducible pipelines — not notebooks thrown over a wall.',
-        icon: 'code',
-      },
-      {
-        title: 'Research-Oriented',
-        description:
-          'Reads the paper, reproduces the baseline, then measures whether the change actually helped.',
-        icon: 'microscope',
-      },
-      {
-        title: 'Problem Solver',
-        description:
-          'Profiles before optimizing, and follows the evidence when the obvious explanation turns out wrong.',
-        icon: 'puzzle',
-      },
-    ],
-    location: {
-      label: 'Jaipur, Rajasthan',
-      sub: 'Available for remote work worldwide',
-      lat: 26.9,
-      lng: 75.8,
-    },
-  },
-
-  // ── Skills — §5.5, 24 nodes (A14 added Rust) ───────────────────────────────
-  // 6 Expert (orbit 1) · 16 Advanced (orbit 2) · 2 Proficient (orbit 3)
-  skills: [
-    // Orbit 1 — Expert
-    {
-      name: 'Python',
-      category: 'Language',
-      level: 'Expert',
-      orbit: 1,
-      icon: 'python',
-      blurb: 'Primary language for every model, training pipeline, and eval harness here.',
-    },
-    {
-      name: 'TensorFlow',
-      category: 'Framework',
-      level: 'Expert',
-      orbit: 1,
-      icon: 'tensorflow',
-      blurb: 'Trained the CIFAR-10 ResNet-18 in Keras, including a custom F1 metric.',
-    },
-    {
-      name: 'Git',
-      category: 'Tool',
-      level: 'Expert',
-      orbit: 1,
-      icon: 'git',
-      blurb: 'Branch-per-experiment workflow with CI gates on format, lint, and tests.',
-    },
-    {
-      name: 'Problem Solving',
-      category: 'Soft Skill',
-      level: 'Expert',
-      orbit: 1,
-      icon: 'problemSolving',
-      blurb: 'Found that a 16 GB BPE corpus beat 45 GB — then explained why, instead of shipping the bigger number.',
-    },
-    {
-      name: 'Research',
-      category: 'Soft Skill',
-      level: 'Expert',
-      orbit: 1,
-      icon: 'research',
-      blurb: 'Evaluation-first: every retrieval change proven on a fixed labeled set before it is kept.',
-    },
-    {
-      name: 'Team Collaboration',
-      category: 'Soft Skill',
-      level: 'Expert',
-      orbit: 1,
-      icon: 'team',
-      blurb: 'Writes the README that lets someone else reproduce the run without asking.',
-    },
-
-    // Orbit 2 — Advanced
-    {
-      name: 'JavaScript',
-      category: 'Language',
-      level: 'Advanced',
-      orbit: 2,
-      icon: 'js',
-      blurb: 'Canvas render loops and polling state machines that survive a dropped connection.',
-    },
-    {
-      name: 'TypeScript',
-      category: 'Language',
-      level: 'Advanced',
-      orbit: 2,
-      icon: 'typescript',
-      blurb: 'Strict mode, zero `any` — the type system is the first test suite.',
-    },
-    {
-      name: 'C++',
-      category: 'Language',
-      level: 'Advanced',
-      orbit: 2,
-      icon: 'cpp',
-      blurb: 'Systems fundamentals: memory layout, cache behaviour, and where the cycles actually go.',
-    },
-    {
-      name: 'Rust',
-      category: 'Language',
-      level: 'Advanced',
-      orbit: 2,
-      icon: 'rust',
-      blurb: 'Wrote the BPE tokenizer engine — thread-local caches, Rayon batching, and a released GIL.',
-    },
-    {
-      name: 'PyTorch',
-      category: 'Framework',
-      level: 'Advanced',
-      orbit: 2,
-      icon: 'pytorch',
-      blurb: 'U-Net trained from scratch for pixel-level segmentation at 95.95% mean IoU.',
-    },
-    {
-      name: 'Scikit-learn',
-      category: 'Framework',
-      level: 'Advanced',
-      orbit: 2,
-      icon: 'scikitLearn',
-      blurb: 'Classical baselines and metric implementations to sanity-check the deep models.',
-    },
-    {
-      name: 'Matplotlib',
-      category: 'Tool',
-      level: 'Advanced',
-      orbit: 2,
-      icon: 'matplotlib',
-      blurb: 'Training curves and confusion matrices — the plots that tell you the run went wrong.',
-    },
-    {
-      name: 'React',
-      category: 'Framework',
-      level: 'Advanced',
-      orbit: 2,
-      icon: 'react',
-      blurb: 'Component trees kept shallow so state changes do not cascade into re-render storms.',
-    },
-    {
-      name: 'Next.js',
-      category: 'Framework',
-      level: 'Advanced',
-      orbit: 2,
-      icon: 'nextjs',
-      blurb: 'App Router with Server Components by default and "use client" pushed to the leaves.',
-    },
-    {
-      name: 'Docker',
-      category: 'Tool',
-      level: 'Advanced',
-      orbit: 2,
-      icon: 'docker',
-      blurb: 'Compose stacks that bring up Postgres + pgvector with the schema already applied.',
-    },
-    {
-      name: 'Figma',
-      category: 'Tool',
-      level: 'Advanced',
-      orbit: 2,
-      icon: 'figma',
-      blurb: 'Designs the token set — spacing, type scale, colour — before writing any CSS.',
-    },
-    {
-      name: 'MySQL',
-      category: 'Tool',
-      level: 'Advanced',
-      orbit: 2,
-      icon: 'mysql',
-      blurb: 'Schema design and index planning for queries that stay fast as rows accumulate.',
-    },
-    {
-      name: 'Google Cloud',
-      category: 'Cloud',
-      level: 'Advanced',
-      orbit: 2,
-      icon: 'googleCloud',
-      blurb: 'GPU VM provisioning for training runs too large for a laptop.',
-    },
-    {
-      name: 'CSS',
-      category: 'Language',
-      level: 'Advanced',
-      orbit: 2,
-      icon: 'css',
-      blurb: 'Compositor-only animation — transform and opacity, never layout-triggering properties.',
-    },
-    {
-      name: 'Technical Writing',
-      category: 'Soft Skill',
-      level: 'Advanced',
-      orbit: 2,
-      icon: 'techWrite',
-      blurb: 'Documents the negative result too — the 45 GB run that lost is in the README.',
-    },
-    {
-      name: 'Project Management',
-      category: 'Soft Skill',
-      level: 'Advanced',
-      orbit: 2,
-      icon: 'project',
-      blurb: 'Ships in phases with a measurable gate at each boundary, not one big-bang merge.',
-    },
-
-    // Orbit 3 — Proficient
-    {
-      name: 'Flutter',
-      category: 'Framework',
-      level: 'Proficient',
-      orbit: 3,
-      icon: 'flutter',
-      blurb: 'Cross-platform UI with a single Dart codebase for Android and iOS.',
-    },
-    {
-      name: 'CUDA & cuDNN',
-      category: 'Tool',
-      level: 'Proficient',
-      orbit: 3,
-      icon: 'cuda',
-      blurb: 'Keeps training on the GPU — mixed precision, batch sizing, and reading nvidia-smi honestly.',
-    },
+  /*
+   * §5 — a positioning statement, not a bio. "This paragraph is the
+   * highest-leverage text on the entire site; write it last." It is written
+   * here to be rewritten at Stage 9, once the document has said what it should
+   * say. Flagging that explicitly so it does not quietly become permanent.
+   */
+  summary: [
+    'I train neural networks and build the systems around them. Most of my work runs on hardware I actually own — a 262k-vocabulary BPE tokenizer written in Rust, a retrieval pipeline that fits in 6 GB of VRAM, and detection and segmentation models evaluated against held-out data rather than a demo.',
+    'I care about the part most portfolios skip: what the numbers cost, where the model fails, and which result is noise. Every figure below is measured, and every limitation is stated.',
   ],
 
-  // ── Projects ────────────────────────────────────────────────────────────────
-  // Sourced from https://api.github.com/users/Yash4616/repos on 2026-08-06.
-  // All star/fork counts below are `0` because that is what the API returned.
-  // Forks of upstream repos (pytorch, huggingface_hub, riscv-unified-db,
-  // website_Kubernetes) are excluded, as is the Yash4616 profile-config repo.
+  sections: [
+    { id: 'selected-work', mark: '01', title: 'Selected Work' },
+    { id: 'methods', mark: '02', title: 'Methods' },
+    { id: 'background', mark: '03', title: 'Background' },
+    { id: 'notes', mark: '04', title: 'Notes' },
+    { id: 'correspondence', mark: '05', title: 'Correspondence' },
+  ],
+
   projects: [
     {
       id: 'tokenizer',
-      title: 'Rust BPE Tokenizer — 262k Vocabulary',
-      description:
+      name: 'tokenizer',
+      title: 'A 262,144-token byte-level BPE tokenizer',
+      // GitHub's linguist reports "Python" because the training pipeline is
+      // Python. The engine is Rust. This list is the honest answer.
+      languages: ['Rust', 'Python'],
+      summary:
         'A CPU-only byte-level BPE tokenizer written in Rust and exposed to Python via PyO3. Ships a trained 262,144-token vocabulary that beats OpenAI’s o200k_base on compression across code, English, and math.',
-      category: 'nlp',
-      tags: ['BPE', 'Tokenizer', 'Rust', 'NLP'],
-      stack: ['Rust', 'PyO3', 'Python', 'Rayon', 'maturin', 'Criterion'],
-      architecture: 'Byte-level BPE — byte_fallback, GPT-4 split regex',
-      metrics: [
-        { label: 'Vocabulary', value: '262,144' },
-        { label: 'Decode vs HF', value: '10.38×' },
+      spec: [
+        {
+          label: 'Architecture',
+          value: 'Byte-level BPE — byte_fallback, GPT-4 split regex, 10 special tokens',
+        },
+        { label: 'Vocab', value: '262,144 (+10 special)' },
+        {
+          label: 'Corpus',
+          value:
+            '16 GB sub-sampled from ~180 GB of filtered public data — code 45% · English 40% · math 10% · conversational 2.5% · multilingual 2.5% (seed 42)',
+        },
+        { label: 'Hardware', value: '16-core laptop, CPU-only — no GPU required' },
+        { label: 'Throughput', value: '~1 GB prose in ~28 s (≈5.7M tok/s)' },
+        { label: 'Decode', value: '22.1M tok/s — 1.09× tiktoken, 10.38× HF' },
+        { label: 'Batch encode', value: '2.95M tok/s — 4.14× tiktoken, short batches' },
+        { label: 'Parity', value: 'cl100k_base ✓   o200k_base ✓' },
       ],
-      // GitHub reports Python as the primary language (the training pipeline is
-      // Python); the engine itself is Rust. Reported here as the API returns it.
-      language: 'Python',
-      stars: 0, // as of 2026-08-06
-      forks: 0, // as of 2026-08-06
+      limitations:
+        'Loses to o200k_base on Arabic (0.93×) and Hindi (0.63×) — non-Latin scripts v1 deliberately does not optimize for. Single-string and large-batch encode trail tiktoken 0.13+, whose rewritten encode path is faster than the 0.12.0 baseline these ratios were measured against; the lead holds on small-batch encode and decode. Throughput ratios jitter ±10% run-to-run.',
+      figures: [
+        {
+          kind: 'bar',
+          caption:
+            'Bytes per token against o200k_base; higher is better. The margin is widest on Haskell and Japanese and narrowest on English — the corpus was weighted 45% code, and the compression follows the weighting.',
+          alt: 'Grouped bar chart comparing bytes-per-token against o200k_base across five domains. This tokenizer scores higher in every one: English 4.9089 versus 4.7351, Python 4.5311 versus 4.2659, C++ 3.9105 versus 3.6061, Haskell 4.3868 versus 3.8447, and Japanese 4.6009 versus 3.7074.',
+          xLabel: 'Domain',
+          yLabel: 'Bytes per token',
+          bars: [
+            { label: 'English', value: 4.9089, reference: 4.7351, note: '1.04×' },
+            { label: 'Python', value: 4.5311, reference: 4.2659, note: '1.06×' },
+            { label: 'C++', value: 3.9105, reference: 3.6061, note: '1.08×' },
+            { label: 'Haskell', value: 4.3868, reference: 3.8447, note: '1.14×' },
+            { label: 'Japanese', value: 4.6009, reference: 3.7074, note: '1.24×' },
+          ],
+        },
+      ],
+      links: { repository: `${GH}/tokenizer` },
       featured: true,
-      links: { github: `${GITHUB_USER}/tokenizer` },
-      image: null,
-      modelCard: {
-        architecture: 'Byte-level BPE — byte_fallback, GPT-4 split regex, 10 special tokens',
-        params: null, // A vocabulary, not a parameterised model. Size is in metrics.
-        dataset:
-          '16 GB sub-sampled from ~180 GB of filtered public data — code 45% · English 40% · math 10% · conversational 2.5% · multilingual 2.5% (seed 42, deterministic assembly)',
-        hardware: '16-core laptop, CPU-only — no GPU required to train or run',
-        epochs: null, // BPE merge training, not epoch-based.
-        optimizer: null, // Greedy frequency-based merge selection has no optimizer.
-        augmentation: [],
-        metrics: [
-          { label: 'Vocabulary size', value: '262,144 (+10 special)' },
-          { label: 'English b/t vs o200k', value: '4.9089 vs 4.7351 — 1.04×' },
-          { label: 'Python b/t vs o200k', value: '4.5311 vs 4.2659 — 1.06×' },
-          { label: 'C++ b/t vs o200k', value: '3.9105 vs 3.6061 — 1.08×' },
-          { label: 'Haskell b/t vs o200k', value: '4.3868 vs 3.8447 — 1.14×' },
-          { label: 'Japanese b/t vs o200k', value: '4.6009 vs 3.7074 — 1.24×' },
-          { label: 'Decode throughput', value: '22.1M tok/s — 1.09× tiktoken, 10.38× HF' },
-          { label: 'Batch-short encode', value: '2.95M tok/s — 4.14× tiktoken' },
-          { label: 'Bulk tokenization', value: '~1 GB prose in ~28 s (≈5.7M tok/s)' },
-          { label: 'tiktoken parity', value: '100% on cl100k_base and o200k_base' },
-        ],
-        limitations:
-          'Loses to o200k_base on Arabic (0.93×) and Hindi (0.63×) — non-Latin scripts v1 deliberately does not optimize for. Single-string and large-batch encode trail tiktoken 0.13+, whose rewritten encode path is faster than the 0.12.0 baseline these ratios were measured against; the lead holds on small-batch encode and decode. Throughput ratios jitter ±10% run-to-run.',
-      },
     },
 
     {
       id: 'object-detection-semantic-segmentation',
-      title: 'Object Detection & Semantic Segmentation',
-      description:
+      name: 'object detection + segmentation',
+      title: 'Two-task detection and segmentation on MNISTDD-RGB',
+      languages: ['Python', 'PyTorch'],
+      summary:
         'A two-task computer vision pipeline on MNISTDD-RGB: YOLOv8-Small locates and labels digits with bounding boxes, while a 4-level U-Net classifies every pixel in the scene.',
-      category: 'computer-vision',
-      tags: ['YOLOv8', 'U-Net', 'Object Detection', 'Segmentation'],
-      stack: ['PyTorch', 'Ultralytics', 'torchvision', 'NumPy', 'Pillow', 'Matplotlib', 'pandas'],
-      architecture: 'YOLOv8-S + U-Net (4-level)',
-      metrics: [
-        { label: 'Detection Acc', value: '97.92%' },
-        { label: 'Mean IoU', value: '95.95%' },
+      spec: [
+        { label: 'Architecture', value: 'YOLOv8-Small (detection) + U-Net 4-level (segmentation)' },
+        { label: 'Params', value: 'YOLOv8-S 11.2M · U-Net ~7.8M' },
+        {
+          label: 'Dataset',
+          value:
+            'MNISTDD-RGB — 100,000 synthetic 128×128 scenes from MNIST, 2 digits per scene on a coloured noisy canvas · 10,000 val · 10,000 held-out test',
+        },
+        { label: 'Hardware', value: 'Kaggle — GPU T4 ×2' },
+        {
+          label: 'Augmentation',
+          value: 'Synthetic scene composition, random digit placement, coloured noise grounds',
+        },
       ],
-      language: 'Jupyter Notebook',
-      stars: 0, // as of 2026-08-06
-      forks: 0, // as of 2026-08-06
+      limitations:
+        'Trained and evaluated entirely on synthetically composed MNIST scenes — two digits on a 128×128 coloured noise canvas. Those scores describe that distribution and not natural imagery; the only out-of-distribution check is the notebook’s own generalisation test on unseen MNIST digits. The headline README table and the generated results report disagree on mean IoU (96.04% vs 95.95%); the generated figure is the one reported here.',
+      figures: [
+        {
+          kind: 'bar',
+          // From the machine-generated "Final report snapshot", treated as
+          // authoritative over the hand-written headline table.
+          caption:
+            'Detection and segmentation scores on the held-out split. Pixel accuracy is near-saturated because most of each scene is background — mean IoU is the honest number to read.',
+          alt: 'Bar chart of seven evaluation scores. Detection: accuracy 97.92 percent, precision 91.11 percent, recall 97.92 percent, F1 94.39 percent. Segmentation: foreground accuracy 97.45 percent, mean IoU 95.95 percent, pixel accuracy 99.96 percent.',
+          yLabel: 'Score',
+          bars: [
+            { label: 'Det. accuracy', value: 97.92, unit: '%' },
+            { label: 'Det. precision', value: 91.11, unit: '%' },
+            { label: 'Det. recall', value: 97.92, unit: '%' },
+            { label: 'Det. F1', value: 94.39, unit: '%' },
+            { label: 'Seg. accuracy (fg)', value: 97.45, unit: '%' },
+            { label: 'Mean IoU', value: 95.95, unit: '%' },
+            { label: 'Pixel accuracy', value: 99.96, unit: '%' },
+          ],
+        },
+      ],
+      links: { repository: `${GH}/Object_Detection_Semantic_Segmentation` },
       featured: true,
-      links: { github: `${GITHUB_USER}/Object_Detection_Semantic_Segmentation` },
-      image: null,
-      modelCard: {
-        architecture: 'YOLOv8-Small (detection) + U-Net 4-level (segmentation)',
-        params: 'YOLOv8-S 11.2M · U-Net ~7.8M',
-        dataset:
-          'MNISTDD-RGB — 100,000 synthetic 128×128 scenes generated from MNIST (2 digits per scene on a coloured noisy canvas), 10,000 val / 10,000 held-out test',
-        hardware: 'Kaggle — GPU T4 ×2',
-        epochs: null, // U-Net used early stopping; the notebook does not state a final count.
-        optimizer: null, // Not stated in the README.
-        augmentation: [
-          'Synthetic scene composition — random digit placement',
-          'Coloured noise canvas backgrounds',
-        ],
-        // Values taken from the "Final report snapshot (from results_report.txt)"
-        // table, which is machine-generated. NOTE: the README's headline table
-        // reports Mean IoU as 96.04% while the generated report says 0.9595 —
-        // the generated file is treated as authoritative here.
-        metrics: [
-          { label: 'Detection Accuracy', value: '97.92%' },
-          { label: 'Detection Precision', value: '91.11%' },
-          { label: 'Detection Recall', value: '97.92%' },
-          { label: 'Detection F1', value: '94.39%' },
-          { label: 'Seg Accuracy (fg)', value: '97.45%' },
-          { label: 'Mean IoU', value: '95.95%' },
-          { label: 'Pixel Accuracy', value: '99.96%' },
-        ],
-        limitations:
-          'Trained and evaluated entirely on synthetically composed MNIST scenes — two digits on a 128×128 coloured noise canvas. Those scores describe that distribution and not natural imagery; the only out-of-distribution check is the notebook’s own generalisation test on unseen MNIST digits. The headline README table and the generated results report disagree on mean IoU (96.04% vs 95.95%); the generated figure is the one reported here.',
-      },
     },
 
     {
       id: 'local-rag',
-      title: 'Local RAG — Evaluation-Driven',
-      description:
+      name: 'local RAG',
+      title: 'An evaluation-driven retrieval-augmented generation system',
+      languages: ['Python', 'TypeScript'],
+      summary:
         'A retrieval-augmented generation system built evaluation-first: every retrieval change is proven with numbers on a fixed labeled gold set before it is kept. Runs entirely locally on a 6 GB GPU.',
-      category: 'nlp',
-      tags: ['RAG', 'Retrieval', 'Evaluation', 'Local LLM'],
-      stack: [
-        'Ollama',
-        'qwen2.5:7b',
-        'bge-m3',
-        'PostgreSQL + pgvector',
-        'HNSW',
-        'BM25 (bm25s)',
-        'RRF',
-        'bge-reranker-v2-m3',
-        'FastAPI',
-        'React',
+      spec: [
+        {
+          label: 'Architecture',
+          value:
+            'dense (bge-m3, 1024-d, HNSW cosine) → BM25 → RRF(k=60) → cross-encoder rerank (top-50 → 5) → grounded generation with inline citations',
+        },
+        { label: 'Generation', value: 'Ollama qwen2.5:7b, explicit refusal when unsupported' },
+        { label: 'Store', value: 'PostgreSQL + pgvector 0.8, HNSW cosine' },
+        {
+          label: 'Corpus',
+          value: '5-book ML corpus — 1,721 chunks · 48-query validated gold set, n=43 scored',
+        },
+        { label: 'Hardware', value: '6 GB GPU, fully local via Ollama — no cloud dependency' },
+        { label: 'Tests', value: '41' },
       ],
-      architecture: 'dense → BM25 + RRF(k=60) → cross-encoder rerank (top-50 → 5)',
-      metrics: [
-        { label: 'recall@5', value: '0.94' },
-        { label: 'recall@10', value: '0.95' },
+      limitations:
+        'The reranked hybrid config wins recall@5 and recall@10, but the plain dense baseline still holds the best top-1 (R@1 0.62, MRR 0.75) — reranking buys coverage at the cost of precision-at-one. Scored on 43 queries over a single 5-book ML corpus; nothing here is validated outside that domain, and the sample is small enough that small deltas are noise.',
+      figures: [
+        {
+          kind: 'bar',
+          caption:
+            'Hybrid retrieval with reranking wins on coverage; the dense baseline still wins at rank one. Both are reported because choosing between them is the actual engineering decision.',
+          alt: 'Bar chart of four retrieval scores. Hybrid with reranking: recall at 5 is 0.94, recall at 10 is 0.95. Dense baseline: recall at 1 is 0.62, mean reciprocal rank is 0.75.',
+          yLabel: 'Score',
+          bars: [
+            { label: 'recall@5 · hybrid+rerank', value: 0.94 },
+            { label: 'recall@10 · hybrid+rerank', value: 0.95 },
+            { label: 'recall@1 · dense', value: 0.62 },
+            { label: 'MRR · dense', value: 0.75 },
+          ],
+        },
       ],
-      language: 'Python',
-      stars: 0, // as of 2026-08-06
-      forks: 0, // as of 2026-08-06
+      links: { repository: `${GH}/Rag` },
       featured: true,
-      links: { github: `${GITHUB_USER}/Rag` },
-      image: null,
-      modelCard: {
-        architecture:
-          'Hybrid retrieval — dense (bge-m3, 1024-d, HNSW cosine) → BM25 → RRF(k=60) → cross-encoder rerank (top-50 → 5) → grounded generation with inline citations',
-        params: null, // Off-the-shelf models; no parameter count claimed for the system.
-        dataset: '5-book ML corpus — 1,721 chunks · 48-query validated gold set (n=43 scored)',
-        hardware: '6 GB GPU, fully local via Ollama — no cloud dependency',
-        epochs: null, // Retrieval system; nothing is trained.
-        optimizer: null,
-        augmentation: [],
-        metrics: [
-          { label: 'recall@5 (hybrid+rerank)', value: '0.94' },
-          { label: 'recall@10 (hybrid+rerank)', value: '0.95' },
-          { label: 'recall@1 (dense baseline)', value: '0.62' },
-          { label: 'MRR (dense baseline)', value: '0.75' },
-          { label: 'Test suite', value: '41 tests' },
-        ],
-        limitations:
-          'The reranked hybrid config wins recall@5 and recall@10, but the plain dense baseline still holds the best top-1 (R@1 0.62, MRR 0.75) — reranking buys coverage at the cost of precision-at-one. Scored on 43 queries over a single 5-book ML corpus; nothing here is validated outside that domain, and the sample is small enough that small deltas are noise.',
-      },
     },
 
     {
       id: 'resnet18-cifar10-classifier',
-      title: 'ResNet-18 CIFAR-10 Classifier',
-      description:
+      name: 'ResNet-18 / CIFAR-10',
+      title: 'A ResNet-18 CIFAR-10 image classifier',
+      languages: ['Python', 'TensorFlow'],
+      summary:
         'A notebook-first CIFAR-10 image classifier built on ResNet-18 with residual blocks, batch normalization, and a CutMix-based augmentation stack, with reproducible training and evaluation reporting.',
-      category: 'computer-vision',
-      tags: ['ResNet', 'CIFAR-10', 'Image Classification', 'TensorFlow'],
-      stack: ['TensorFlow 2.19', 'Keras', 'NumPy', 'Matplotlib'],
-      architecture: 'ResNet-18',
-      metrics: [
+      spec: [
+        {
+          label: 'Architecture',
+          value:
+            'ResNet-18 — residual blocks, BatchNormalization after each convolution, global average pooling, L2 weight decay',
+        },
+        {
+          label: 'Dataset',
+          value: 'CIFAR-10 — 60,000 32×32 RGB images across 10 classes · 50k train · 10k test',
+        },
+        { label: 'Optimizer', value: 'SGD with momentum' },
+        {
+          label: 'Augmentation',
+          value: 'Random horizontal flip · random translation · random crop · CutMix',
+        },
         { label: 'Accuracy', value: '88.22%' },
+        { label: 'Precision', value: '91.16%' },
+        { label: 'Recall', value: '85.35%' },
         { label: 'Loss', value: '0.7198' },
+        { label: 'Train time', value: '~28.8 min (1,729.7 s)' },
       ],
-      language: 'Python',
-      stars: 0, // as of 2026-08-06
-      forks: 0, // as of 2026-08-06
-      featured: false, // A16 — kept in the grid, not led with.
-      links: { github: `${GITHUB_USER}/ResNet18-CIFAR10-Classifier` },
-      image: null,
-      modelCard: {
-        architecture:
-          'ResNet-18 — residual blocks, BatchNormalization after each convolution, global average pooling, L2 weight decay',
-        params: null, // Not stated in the repo. Not inferred from the canonical 11.2M.
-        dataset: 'CIFAR-10 — 60,000 32×32 RGB images across 10 classes, 50k train / 10k test',
-        hardware: null, // README notes GPU optimization but names no device.
-        epochs: null, // Early stopping; final epoch count not recorded.
-        optimizer: 'SGD with momentum',
-        augmentation: [
-          'Random horizontal flip',
-          'Random translation',
-          'Random crop',
-          'CutMix',
-        ],
-        // A15 — the README's F1 of 98.62% is OMITTED. It is arithmetically
-        // impossible from its own Precision 91.16% / Recall 85.35% (true F1
-        // ≈ 88.16%), so publishing it would be a number a reader could
-        // disprove with a calculator. Per D8 and AP-12, it is left out rather
-        // than silently corrected.
-        metrics: [
-          { label: 'Accuracy', value: '88.22%' },
-          { label: 'Precision', value: '91.16%' },
-          { label: 'Recall', value: '85.35%' },
-          { label: 'Loss', value: '0.7198' },
-          { label: 'Training time', value: '~28.8 min (1,729.7 s)' },
-        ],
-        limitations:
-          'Test accuracy of 88.22% sits below the standard published ResNet-18 CIFAR-10 baseline, so there is real headroom left in the training schedule rather than in the architecture. Recall (85.35%) trails precision (91.16%) — the model misses more than it over-calls. Nothing here is validated outside the CIFAR-10 distribution. The README additionally reports an F1 of 98.62% that is inconsistent with its own precision and recall; it is excluded here pending a re-run.',
-      },
+      limitations:
+        'Test accuracy of 88.22% sits below the standard published ResNet-18 CIFAR-10 baseline, so there is real headroom left in the training schedule rather than in the architecture. Recall (85.35%) trails precision (91.16%) — the model misses more than it over-calls. Nothing here is validated outside the CIFAR-10 distribution. The README additionally reports an F1 of 98.62% that is inconsistent with its own precision and recall; it is excluded here pending a re-run.',
+      // AWAITING REAL DATA (§6). Two figures belong here and are deliberately
+      // absent rather than approximated:
+      //   1. kind 'matrix' — the 10×10 CIFAR-10 confusion matrix from running
+      //      eval on the saved model. Must NOT be read off a rendered PNG.
+      //   2. kind 'curve'  — downsampled train-loss / val-accuracy arrays,
+      //      ≤48 points each, from the training logs.
+      // Figure components render nothing when the array is empty.
+      figures: [],
+      links: { repository: `${GH}/ResNet18-CIFAR10-Classifier` },
+      featured: false,
     },
 
     {
       id: 'computer-vision',
-      title: 'Vision Detection Systems',
-      // A18 — describes the work plainly as integration. An accurate description
-      // of wiring pretrained models into a working pipeline is credible; a vague
-      // one that lets a reader assume training happened is not.
-      description:
+      name: 'vision detection systems',
+      title: 'An applied detection toolkit around pretrained models',
+      languages: ['Python'],
+      summary:
         'An applied toolkit built around pretrained detectors — YOLOv8 for person detection and OpenCV Haar cascades for face detection — wired into a pipeline that runs on webcam or video files with annotated real-time output. Integration work; no models were trained here.',
-      category: 'computer-vision',
-      tags: ['YOLOv8', 'OpenCV', 'Detection', 'Real-time'],
-      stack: ['Python', 'OpenCV', 'YOLOv8', 'Ultralytics', 'PyTorch', 'NumPy'],
-      architecture: 'YOLOv8 + OpenCV Haar Cascades',
-      metrics: [
-        { label: 'Throughput', value: '~30 FPS @ 1080p' },
+      spec: [
+        { label: 'Components', value: 'YOLOv8 (person) + OpenCV Haar cascades (face)' },
+        { label: 'Throughput', value: '~30 FPS at 1080p' },
         { label: 'Model size', value: '6–136 MB' },
+        { label: 'Stack', value: 'Python · OpenCV · Ultralytics · PyTorch · NumPy' },
       ],
-      language: 'Python',
-      stars: 0, // as of 2026-08-06
-      forks: 0, // as of 2026-08-06
+      // Nothing was trained here, so there is no model to state failure modes
+      // for. Manufacturing a limitations line would be the dishonest move.
+      limitations: null,
+      figures: [],
+      links: { repository: `${GH}/Computer-Vision` },
       featured: false,
-      links: { github: `${GITHUB_USER}/Computer-Vision` },
-      image: null,
-      // Applied toolkit built on pretrained detectors — nothing was trained here,
-      // so there is no model card to present. Claiming one would be dishonest.
-      modelCard: null,
     },
 
     {
-      // A17 — added on the strength of what is actually in the repo: daemon
-      // worker threads, a 10,000-step buffer cap, a 60s hard timeout, a reaper
-      // thread, run-ID-seeded deterministic generation, and a guarded 7-state
-      // frontend machine. That is engineering, not a class exercise.
       id: 'sorting-visualizer',
-      title: 'Sorting Visualizer',
-      description:
+      name: 'sorting visualizer',
+      title: 'A threaded sorting visualizer with a streaming step API',
+      languages: ['Python', 'TypeScript'],
+      summary:
         'A full-stack sorting visualizer where a Flask backend runs each sort in a daemon worker thread and streams its steps through a polling API, and a TypeScript canvas frontend replays them through a guarded state machine with backpressure handling.',
-      category: 'web-development',
-      tags: ['Algorithms', 'Canvas', 'Concurrency', 'State Machine'],
-      stack: ['Python', 'Flask', 'Waitress', 'TypeScript', 'Vite', 'HTML Canvas'],
-      architecture: 'Threaded run manager + cursor-paginated polling API + RAF renderer',
-      metrics: null, // Not a benchmarked system — no measured numbers to claim.
-      language: 'Python',
-      stars: 0, // as of 2026-08-06
-      forks: 0, // as of 2026-08-06
+      spec: [
+        {
+          label: 'Architecture',
+          value: 'Threaded run manager + cursor-paginated polling API + RAF renderer',
+        },
+        { label: 'Algorithms', value: 'Bubble · selection · insertion · merge · quick · heap' },
+        { label: 'Safeguards', value: '10,000-step buffer cap · 60 s hard timeout · reaper thread' },
+        { label: 'Determinism', value: 'Array generation seeded by run ID' },
+        { label: 'Stack', value: 'Flask · Waitress · TypeScript · Vite · HTML Canvas' },
+      ],
+      limitations: null,
+      figures: [],
+      links: { repository: `${GH}/Sorting_Visualizer` },
       featured: false,
-      links: { github: `${GITHUB_USER}/Sorting_Visualizer` },
-      image: null,
-      modelCard: null,
     },
 
     {
       id: 'website',
-      title: 'yash.systems',
-      description:
-        'This site. A single-page portfolio built on the Next.js App Router with an OGL particle field, Framer Motion throughout, and every piece of content driven from one typed config object.',
-      category: 'web-development',
-      tags: ['Next.js', 'WebGL', 'Portfolio', 'Design System'],
-      stack: ['Next.js 15', 'TypeScript', 'Tailwind CSS', 'Framer Motion', 'OGL'],
-      architecture: null,
-      metrics: null,
-      language: 'TypeScript',
-      stars: 0, // as of 2026-08-06
-      forks: 0, // as of 2026-08-06
+      name: 'yash.systems',
+      title: 'This document',
+      languages: ['TypeScript'],
+      summary:
+        'This site, built as a typeset technical document rather than a portfolio. Server-rendered with the Next.js App Router, figures drawn as inline SVG from measured data, and every piece of content driven from one validated configuration object.',
+      spec: [
+        { label: 'Stack', value: 'Next.js 15 · React 19 · TypeScript · Tailwind 4' },
+        { label: 'Type', value: 'Archivo · IBM Plex Mono' },
+        { label: 'Figures', value: 'Inline SVG from measured data — no canvas, no WebGL' },
+        { label: 'Content', value: 'One config object, validated by zod at build time' },
+      ],
+      limitations: null,
+      figures: [],
+      links: { repository: `${GH}/Website`, demo: SITE_URL },
       featured: false,
-      links: { github: `${GITHUB_USER}/Website`, demo: SITE_URL },
-      image: '/assets/images/website.png',
-      modelCard: null,
+    },
+  ],
+
+  /*
+   * §5 / 02 METHODS — reference material, deliberately quiet and short.
+   *
+   * NOTE, needs sign-off: the previous roster carried 24 entries, five of them
+   * soft skills (Problem Solving, Research, Team Collaboration, Technical
+   * Writing, Project Management). They are omitted because §5's own example
+   * lists only technical methods, and an unfalsifiable claim like "Team
+   * Collaboration" set beside measured numbers weakens everything near it. The
+   * 19 technical entries below are the complete carried-over set.
+   */
+  methods: [
+    {
+      label: 'Languages',
+      items: [
+        { name: 'Python', depth: 'Expert' },
+        { name: 'Rust', depth: 'Advanced' },
+        { name: 'TypeScript', depth: 'Advanced' },
+        { name: 'C++', depth: 'Advanced' },
+        { name: 'JavaScript', depth: 'Advanced' },
+        { name: 'CSS', depth: 'Advanced' },
+      ],
+    },
+    {
+      label: 'Frameworks',
+      items: [
+        { name: 'TensorFlow', depth: 'Expert' },
+        { name: 'PyTorch', depth: 'Advanced' },
+        { name: 'scikit-learn', depth: 'Advanced' },
+        { name: 'React', depth: 'Advanced' },
+        { name: 'Next.js', depth: 'Advanced' },
+        { name: 'Flutter', depth: 'Proficient' },
+      ],
+    },
+    {
+      label: 'Infrastructure',
+      items: [
+        { name: 'Docker', depth: 'Advanced' },
+        { name: 'Google Cloud', depth: 'Advanced' },
+        { name: 'MySQL', depth: 'Advanced' },
+        { name: 'CUDA / cuDNN', depth: 'Proficient' },
+      ],
+    },
+    {
+      label: 'Tooling',
+      items: [
+        { name: 'Git', depth: 'Expert' },
+        { name: 'Matplotlib', depth: 'Advanced' },
+        { name: 'Figma', depth: 'Advanced' },
+      ],
+    },
+  ],
+
+  background: [
+    {
+      qualification: 'B.Tech, Computer Science & Engineering (AI & ML, IBM)',
+      institution: 'JECRC University, Jaipur',
+      from: 2023,
+      to: 2027,
+    },
+    {
+      qualification: 'Secondary & Senior Secondary',
+      institution: 'Alwar Public School',
+      from: 2009,
+      to: 2022,
     },
   ],
 
   contact: {
     email: 'yashgurjar9714@gmail.com',
     location: 'Jaipur, Rajasthan, India',
-    availability: 'Open to internships and remote work',
+    availability: 'Available from 2027 · Research or applied ML · Remote or Jaipur',
   },
 
-  social: [
-    { label: 'GitHub', href: GITHUB_USER, icon: 'github' },
-    { label: 'LinkedIn', href: 'https://linkedin.com/in/yashgurjar9', icon: 'linkedin' },
-    { label: 'X', href: 'https://x.com/Yash_9724', icon: 'x' },
+  links: [
+    { label: 'GitHub', href: GH },
+    { label: 'LinkedIn', href: 'https://linkedin.com/in/yashgurjar9' },
+    { label: 'X', href: 'https://x.com/Yash_9724' },
   ],
-
-  // §5.6 — exit at 3.5 s. Mobile scales every `at` by 0.57 (→ ~2.0 s).
-  loader: [
-    { at: 0.0, text: 'Initializing system...' },
-    { at: 0.3, text: 'Loading neural weights...', progress: 80 },
-    { at: 0.6, text: 'Loading neural weights...', progress: 100, done: true },
-    { at: 0.9, text: 'Allocating GPU memory... 24GB VRAM', done: true },
-    { at: 1.2, text: 'Initializing tensor cores...', done: true },
-    { at: 1.5, text: 'Loading model architecture... ResNet-152', done: true },
-    { at: 1.8, text: 'Compiling computation graph...' },
-    { at: 2.2, text: 'Optimizing inference pipeline...', done: true },
-    { at: 2.5, text: 'Running validation... accuracy: 99.2%', done: true },
-    { at: 2.8, text: 'System ready.' },
-    { at: 3.0, text: 'Deploying yash.systems...' },
-    { at: 3.3, text: 'DEPLOYED', progress: 100, done: true },
-  ],
-
-  footer: {
-    tagline: 'Building intelligent systems, one converged model at a time.',
-    // `{year}` is substituted at render time — never hardcode the year.
-    copyright: '© {year} Yash Gurjar. Crafted with Next.js, OGL & too much coffee.',
-    quickLinks: [
-      { label: 'Home', href: '#hero' },
-      { label: 'About', href: '#about' },
-      { label: 'Skills', href: '#skills' },
-      { label: 'Projects', href: '#projects' },
-      { label: 'Contact', href: '#contact' },
-    ],
-  },
 
   resumeUrl: '/assets/pdfs/Yash_Resume.pdf',
-};
 
-/** Lookup used by /projects/[slug] and the Stage 7 terminal's `cat <id>` command. */
+  colophon: [
+    'Set in Archivo and IBM Plex Mono. Built with Next.js, deployed on Vercel.',
+    'Figures rendered as inline SVG from measured data. Source on GitHub.',
+  ],
+});
+
+/** Lookup for /projects/[slug]. */
 export function getProjectById(id: string) {
   return siteConfig.projects.find((project) => project.id === id);
 }
+
+/** Featured first, declaration order preserved within each group. */
+export const orderedProjects = [
+  ...siteConfig.projects.filter((p) => p.featured),
+  ...siteConfig.projects.filter((p) => !p.featured),
+];

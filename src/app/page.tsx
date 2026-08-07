@@ -1,25 +1,29 @@
-import HeroSection from '@/components/sections/Hero';
-import AboutSection from '@/components/sections/About';
-import SkillsSection from '@/components/sections/Skills';
-import ProjectsSection from '@/components/sections/Projects';
-import ContactSection from '@/components/sections/Contact';
+import Link from 'next/link';
+import { siteConfig } from '@/data/config';
 
 /**
- * Stays a Server Component (§3.1) — the boot gate and cursor are client leaves
- * mounted at the root by ClientWrapper, so nothing here needs "use client".
+ * Placeholder. The document — masthead, summary, margin TOC, numbered sections
+ * — is Stage 2 (REBUILD.md §11). Stage 1 delivers the design system, the ported
+ * and validated data, and the specimen at /specimen for approval.
  *
- * §6.2 — the commented-out Experience and Testimonials imports were removed.
- * The section components themselves still exist and were not deleted; they are
- * simply not part of the page.
+ * Deliberately not a preview of the design, so nothing here has to be un-built.
  */
 export default function Home() {
   return (
-    <>
-      <HeroSection />
-      <AboutSection />
-      <SkillsSection />
-      <ProjectsSection />
-      <ContactSection />
-    </>
+    <main id="main" className="doc-grid min-h-screen items-center py-24">
+      <div className="col-measure">
+        <p className="label">yash.systems · {siteConfig.masthead.revision}</p>
+        <h1 className="mt-4 text-title">{siteConfig.masthead.name}</h1>
+        <p className="mt-1 font-mono text-data text-ink-3">{siteConfig.masthead.role}</p>
+        <hr className="rule-strong my-6" />
+        <p className="max-w-[60ch] text-body text-ink-2">
+          This document is being rebuilt. Stage 1 — fonts, colour tokens, three-track grid,
+          grain, registration marks, and validated content — is complete and awaiting review.
+        </p>
+        <p className="mt-6 font-mono text-data">
+          <Link href="/specimen">→ Typographic specimen</Link>
+        </p>
+      </div>
+    </main>
   );
 }
