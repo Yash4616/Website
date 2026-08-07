@@ -146,8 +146,11 @@ export default function HeroSection() {
             aria-live="off"
             {...reveal(0.45)}
           >
-            <span className="text-content-secondary">
-              {siteConfig.hero.typewriterPrefix}
+            {/* Trailing whitespace in JSX text is collapsed by HTML, which ran
+                the prefix into the word ("Specializing inPyTorch"). Trim it and
+                own the gap in CSS instead. */}
+            <span className="mr-2 text-content-secondary">
+              {siteConfig.hero.typewriterPrefix.trim()}
             </span>
             <span>{typed}</span>
             <span className="ml-0.5 animate-blink" aria-hidden="true">

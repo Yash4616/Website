@@ -1,3 +1,25 @@
+> # ⚠ SUPERSEDED — DO NOT USE FOR DESIGN GUIDANCE
+>
+> **`REBUILD.md` replaces this document entirely, as of 2026-08-07.**
+>
+> Everything below about neural canvases, particle fields, glassmorphism, boot
+> loaders, custom cursors, orbital skill radars, and cyan/violet gradients is
+> **dead**. `REBUILD.md` §1.6 bans all of it by name. The direction failed for a
+> diagnosable reason: that combination is the most-generated portfolio aesthetic
+> in existence, and more polish only made it more polished slop.
+>
+> **This file is retained for exactly one purpose:** it is the provenance record
+> for the verified content data — the GitHub-API-sourced project facts, the
+> README-traced metrics, and the approved `limitations` lines. That work is fact,
+> not design, and is ported forward unchanged (`REBUILD.md` §3). The data itself
+> lives in `src/data/config.ts` at commit `33b0a6d`.
+>
+> Read §5 (canonical facts) and the AMENDMENT LOG entries about data — A15, A16,
+> A17, A18, A19 — for *why* a given number is or is not published. Read nothing
+> here for *how anything should look*.
+
+---
+
 # MASTER PLAN — yash.systems Rebuild
 
 > **Repo:** `C:\Dev\Build\Website`
@@ -48,6 +70,8 @@ same authority as the original text. Each one is applied inline in the section n
 | A25 | §7/Stage 3c **and its gate** | **The hero mask reveal plays ONLY when the loader did not run** — return visit, deep link, or reduced motion. When the loader runs, the hero renders in its final composed state behind it, paintable immediately, and **the loader's split-reveal IS the hero's entrance.** The Stage 3 gate requirement becomes **"LCP resolves to the `<h1>` and stays under 2.5 s"**, not "the h1 animates." | A mask reveal keeps the `<h1>` clipped out of the viewport, so it is not a contentful paint until the loader exits — LCP would move from ~1.6 s to ~3.8 s and blow the 2.5 s budget to win a gate line. Two further benefits: two entrance animations never stack on each other, and the reveal is still seen by everyone who skips or returns. |
 | A26 | §7/Stage 3b, next.config.ts | **`worker-src 'self' blob:` added to the CSP now**, ahead of the OffscreenCanvas migration. | Putting it in place before the migration means a CSP failure cannot be confused with a renderer failure while debugging the worker. |
 | A27 | §7/Stage 3 gate, §8 | **`prefers-reduced-motion` is verified in Stage 3, not Stage 8**, by launching Chrome with `--force-prefers-reduced-motion=reduce` (or a `matchMedia` harness if flags cannot be passed). Both the loader's 600 ms path and the canvas's single-static-frame path must be **observed, not inferred**. | Reduced motion is a correctness path with its own branches, not a coat of polish. Carrying it to Stage 8 means eight stages of unverified branches. |
+| A28 | §7/Stage 3c, §7/Stage 8 | **The hero keeps its specced form for now** (gradient name + typewriter + particle field) and is **revisited at Stage 8**, in context, once the model cards, sparklines, confusion matrix and terminal shell exist to judge it against. | Owner's call. Recorded here because it is a known, accepted debt, not an oversight: **§7 Stage 3c prescribes exactly the combination §8 opens by criticising** — "almost every AI portfolio is a normal portfolio with neural-network wallpaper." Gradient text + typewriter + particles is the most common AI-portfolio hero on the web, so the first eight seconds currently read as template while the differentiation sits below the fold. Re-open this at Stage 8 rather than losing it. |
+| A29 | Working agreement | **When a spec conflicts with the plan's own stated goals, flag it BEFORE writing the code**, even mid-stage — not in the stage report afterwards. | Owner's call. Stage 3c was built to spec and only then questioned, which meant building the wrong thing well. A round trip is cheaper than a redo. |
 | A22 | §6.2 | **The old shadcn toast system is deleted** (`ui/toast.tsx`, `ui/toaster.tsx`, `hooks/use-toast.ts`) and `@radix-ui/react-toast` uninstalled. **`sonner` is the site's only toast library**, used by the Stage 7 "Copied ✓" pill. `next-themes` uninstalled; `ui/sonner.tsx` hardcodes `theme="dark"`. | Two toast systems, both unmounted, one of them the only remaining reason `next-themes` was installed. Resolves the A7 blocker. |
 
 ---

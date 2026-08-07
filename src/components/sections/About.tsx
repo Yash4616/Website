@@ -74,7 +74,7 @@ export default function AboutSection() {
 
           {/* Bio and strengths column */}
           <div className="md:w-3/5">
-            <h2 className="text-2xl font-bold tracking-tight">About Me</h2>
+            <h2 className="text-3xl font-bold tracking-tight">About Me</h2>
             <p className="mt-6 text-base leading-relaxed">
               I&apos;m a Computer Science student from Jaipur with a deep fascination for how machines 
               can learn and adapt. I spend my time between training neural networks, building web 
@@ -100,8 +100,8 @@ export default function AboutSection() {
             <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-6">
               <Strength
                 icon={<FaBrain className="h-5 w-5" />}
-                title="Deep Learning Expert"
-                description="Specialized in neural networks and advanced ML architectures"
+                title="Deep Learning"
+                description="Hands-on with neural networks and modern ML architectures"
               />
               <Strength
                 icon={<FaCode className="h-5 w-5" />}

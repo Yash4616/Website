@@ -6,26 +6,18 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Ripple } from "@/components/ui/ripple"
 import { cn } from '@/lib/utils'
 
-// Helper function to get skill level label from percentage
-function getSkillLevel(level: number): string {
-  if (level >= 90) return 'Expert'
-  if (level >= 75) return 'Advanced'
-  if (level >= 60) return 'Proficient'
-  return 'Intermediate'
-}
-
 // Define skill categories and skills
 const skillCategories = [
   {
     id: 'languages',
     name: 'Languages',
     skills: [
-      { name: 'Python', level: 90, logo: 'python.svg' },
-      { name: 'JavaScript', level: 75, logo: 'js.svg' },
-      { name: 'TypeScript', level: 80, logo: 'typescript.svg' },
-      { name: 'C++', level: 80, logo: 'cpp.svg' },
-      { name: 'Flutter', level: 70, logo: 'flutter.svg' },
-      { name: 'Css', level: 85, logo: 'css.svg' },
+      { name: 'Python', logo: 'python.svg' },
+      { name: 'JavaScript', logo: 'js.svg' },
+      { name: 'TypeScript', logo: 'typescript.svg' },
+      { name: 'C++', logo: 'cpp.svg' },
+      { name: 'Flutter', logo: 'flutter.svg' },
+      { name: 'Css', logo: 'css.svg' },
 
     ]
   },
@@ -33,68 +25,55 @@ const skillCategories = [
     id: 'frameworks',
     name: 'Frameworks & Libraries',
     skills: [
-      { name: 'TensorFlow', level: 90, logo: 'tensorflow.svg' },
-      { name: 'PyTorch', level: 80, logo: 'pytorch.svg' },
-      { name: 'Scikit-learn', level: 80, logo: 'scikitLearn.svg' },
-      { name: 'Matplotlib', level: 80, logo: 'matplotlib.svg' },
-      { name: 'React', level: 80, logo: 'react.svg' },
-      { name: 'Next.js', level: 85, logo: 'nextjs.svg' },
+      { name: 'TensorFlow', logo: 'tensorflow.svg' },
+      { name: 'PyTorch', logo: 'pytorch.svg' },
+      { name: 'Scikit-learn', logo: 'scikitLearn.svg' },
+      { name: 'Matplotlib', logo: 'matplotlib.svg' },
+      { name: 'React', logo: 'react.svg' },
+      { name: 'Next.js', logo: 'nextjs.svg' },
     ]
   },
   {
     id: 'tools',
     name: 'Tools & Technologies',
     skills: [
-      { name: 'Docker', level: 85, logo: 'docker.svg' },
-      { name: 'Git', level: 90, logo: 'github.svg' },
-      { name: 'Figma', level: 80, logo: 'figma.svg' },
-      { name: 'CUDA & CuDnn', level: 70, logo: 'cuda.svg' },
-      { name: 'MySQL', level: 75, logo: 'mysql.svg' },
-      { name: 'Google Cloud', level: 85, logo: 'googleCloud.svg' },
+      { name: 'Docker', logo: 'docker.svg' },
+      { name: 'Git', logo: 'github.svg' },
+      { name: 'Figma', logo: 'figma.svg' },
+      { name: 'CUDA & CuDnn', logo: 'cuda.svg' },
+      { name: 'MySQL', logo: 'mysql.svg' },
+      { name: 'Google Cloud', logo: 'googleCloud.svg' },
     ]
   },
   {
     id: 'soft',
     name: 'Soft Skills',
     skills: [
-      { name: 'Problem Solving', level: 95, logo: 'problemSolving.svg' },
-      { name: 'Technical Writing', level: 85, logo: 'techWrite.svg' },
-      { name: 'Team Collaboration', level: 90, logo: 'team.svg' },
-      { name: 'Research', level: 90, logo: 'research.svg' },
-      { name: 'Project Management', level: 80, logo: 'project.svg' },
+      { name: 'Problem Solving', logo: 'problemSolving.svg' },
+      { name: 'Technical Writing', logo: 'techWrite.svg' },
+      { name: 'Team Collaboration', logo: 'team.svg' },
+      { name: 'Research', logo: 'research.svg' },
+      { name: 'Project Management', logo: 'project.svg' },
     ]
   }
 ]
 
-function SkillItem({ name, level, logo }: { name: string; level: number; logo: string }) {
-  const skillLevel = getSkillLevel(level)
-
+function SkillItem({ name, logo }: { name: string; logo: string }) {
   return (
-    <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors">
-      <div className="flex items-center gap-3">
-        {logo.endsWith('.svg') ? (
-          <div className="w-8 h-8 relative flex-shrink-0">
-            <Image
-              src={`/assets/icons/${logo}`}
-              alt={`${name} logo`}
-              fill
-              className="object-contain"
-            />
-          </div>
-        ) : (
-          <span className="text-xl">{logo}</span>
-        )}
-        <span className="font-medium">{name}</span>
-      </div>
-      <span className={cn(
-        "text-sm font-medium px-2.5 py-1 rounded-full",
-        skillLevel === 'Expert' && "bg-green-500/20 text-green-400",
-        skillLevel === 'Advanced' && "bg-blue-500/20 text-blue-400",
-        skillLevel === 'Proficient' && "bg-yellow-500/20 text-yellow-400",
-        skillLevel === 'Intermediate' && "bg-orange-500/20 text-orange-400",
-      )}>
-        {skillLevel}
-      </span>
+    <div className="flex items-center gap-3 p-4 rounded-xl border border-border/50 bg-card/40 hover:border-primary/40 hover:bg-card/60 transition-colors">
+      {logo.endsWith('.svg') ? (
+        <div className="w-8 h-8 relative flex-shrink-0">
+          <Image
+            src={`/assets/icons/${logo}`}
+            alt={`${name} logo`}
+            fill
+            className="object-contain"
+          />
+        </div>
+      ) : (
+        <span className="text-xl">{logo}</span>
+      )}
+      <span className="font-medium text-sm sm:text-base">{name}</span>
     </div>
   )
 }
@@ -122,9 +101,9 @@ export default function SkillsSection() {
     <section id="skills" className="py-16 md:py-24 w-full">
       <div className="container">
         <div className="max-w-3xl mx-auto text-center mb-12">
-          <h2 className="text-3xl font-bold tracking-tight">Skills & Expertise</h2>
+          <h2 className="text-3xl font-bold tracking-tight">Skills &amp; Expertise</h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            Here&apos;s a breakdown of my technical skills and areas of expertise
+            Here&apos;s a breakdown of my technical skills and the tools I work with
           </p>
         </div>
 
@@ -146,12 +125,11 @@ export default function SkillsSection() {
 
           {skillCategories.map(category => (
             <TabsContent key={category.id} value={category.id} className="mt-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {category.skills.map(skill => (
                   <SkillItem
                     key={skill.name}
                     name={skill.name}
-                    level={skill.level}
                     logo={skill.logo}
                   />
                 ))}
