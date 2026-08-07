@@ -27,7 +27,7 @@ export function Section({
       aria-labelledby={headingId}
       className="doc-grid scroll-mt-12 pt-24"
     >
-      <hr className="rule-strong col-full mb-6" />
+      <hr className="rule-strong section-rule col-full mb-6" />
 
       <div className="col-margin">
         {/* Decorative apparatus. The heading carries the accessible name —
@@ -37,8 +37,8 @@ export function Section({
         </span>
       </div>
 
-      <h2 id={headingId} className="col-measure text-title uppercase tracking-[-0.01em]">
-        {section.title}
+      <h2 id={headingId} className="section-heading col-measure text-title uppercase tracking-[-0.01em]">
+        <span>{section.title}</span>
       </h2>
 
       {children}

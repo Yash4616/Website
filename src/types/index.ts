@@ -18,6 +18,7 @@ export type {
   ProjectEntry,
   BackgroundEntry,
   ContactFacts,
+  Correspondence,
   ExternalLink,
   DocSection,
   SiteConfig,

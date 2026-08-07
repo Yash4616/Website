@@ -5,6 +5,14 @@ import { Section } from '@/components/document/section';
 import { NotesList } from '@/components/document/notes';
 import { MarginToc } from '@/components/document/margin-toc';
 import { PageFrame } from '@/components/document/page-frame';
+import { SelectedWork } from '@/components/document/selected-work';
+import { Methods } from '@/components/document/methods';
+import { Background } from '@/components/document/background';
+import { Contact } from '@/components/document/contact';
+import { NoteIndex } from '@/components/document/note-index';
+import { Colophon } from '@/components/document/colophon';
+import { KeyboardNavigation } from '@/components/document/keyboard-navigation';
+import { getNotes } from '@/lib/notes';
 
 /**
  * The document shell — REBUILD.md §11, Stage 2.
@@ -17,11 +25,13 @@ import { PageFrame } from '@/components/document/page-frame';
  * A Server Component. `MarginToc` is the only client leaf on the page, and it
  * exists to track one integer.
  */
-export default function Home() {
+export default async function Home() {
+  const noteDocuments = await getNotes();
   return (
     <>
       <PageFrame />
       <MarginToc sections={siteConfig.sections} />
+      <KeyboardNavigation ids={siteConfig.sections.map((section) => section.id)} />
 
       <main id="main" className="relative pb-32">
         {/* §2.4/3 — the measurement grid, at 3% opacity. Structure you register
@@ -37,11 +47,18 @@ export default function Home() {
         <Masthead />
         <Summary />
 
-        {siteConfig.sections.map((section) => (
-          <Section key={section.id} section={section} />
-        ))}
+        {siteConfig.sections.map((section) => {
+          let body: React.ReactNode = null;
+          if (section.id === 'selected-work') body = <SelectedWork />;
+          if (section.id === 'methods') body = <Methods />;
+          if (section.id === 'background') body = <Background />;
+          if (section.id === 'notes') body = <NoteIndex notes={noteDocuments} />;
+          if (section.id === 'correspondence') body = <Contact />;
+          return <Section key={section.id} section={section}>{body}</Section>;
+        })}
 
         <NotesList />
+        <Colophon />
       </main>
     </>
   );

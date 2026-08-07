@@ -143,6 +143,14 @@ export const contactFactsSchema = z.object({
   availability: nonEmpty,
 });
 
+export const correspondenceSchema = z.object({
+  intro: nonEmpty,
+  nameLabel: nonEmpty,
+  emailLabel: nonEmpty,
+  messageLabel: nonEmpty,
+  submitLabel: nonEmpty,
+});
+
 export const externalLinkSchema = z.object({
   label: nonEmpty,
   href: z.string().url(),
@@ -195,6 +203,7 @@ export const siteConfigSchema = z.object({
   methods: z.array(methodGroupSchema).min(1),
   background: z.array(backgroundEntrySchema).min(1),
   contact: contactFactsSchema,
+  correspondence: correspondenceSchema,
   links: z.array(externalLinkSchema).min(1),
   resumeUrl: nonEmpty,
   colophon: z.array(nonEmpty).min(1),
@@ -211,6 +220,7 @@ export type Figure = z.infer<typeof figureSchema>;
 export type ProjectEntry = z.infer<typeof projectEntrySchema>;
 export type BackgroundEntry = z.infer<typeof backgroundEntrySchema>;
 export type ContactFacts = z.infer<typeof contactFactsSchema>;
+export type Correspondence = z.infer<typeof correspondenceSchema>;
 export type ExternalLink = z.infer<typeof externalLinkSchema>;
 export type DocSection = z.infer<typeof docSectionSchema>;
 export type Note = z.infer<typeof noteSchema>;

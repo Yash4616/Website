@@ -387,8 +387,10 @@
   .margin-toc {
     position: fixed;
     top: 50%;
-    left: max(2rem, calc(50vw - var(--doc-width) / 2));
-    width: var(--track-margin);
+    /* The TOC sits just outside the document grid so it never collides with
+       the section number occupying the grid's own margin track. */
+    left: max(3rem, calc(50vw - var(--doc-width) / 2 - 6rem));
+    width: 5rem;
     transform: translateY(-50%);
     z-index: 20;
   }
@@ -436,7 +438,7 @@
     border-left-color: var(--color-accent);
   }
 
-  @media (max-width: 1279px) {
+  @media (max-width: 1439px) {
     .margin-toc {
       display: none;
     }
@@ -499,4 +501,118 @@
     padding-right: 2rem;
     width: 1%;
   }
+
+  .contact-form {
+    max-width: 68ch;
+  }
+
+  .contact-field {
+    display: grid;
+    gap: 0.55rem;
+    padding-block: 0.9rem;
+    border-bottom: 1px solid var(--color-rule);
+  }
+
+  .contact-field label {
+    font-family: var(--font-mono);
+    font-size: var(--text-label);
+    line-height: var(--text-label--line-height);
+    letter-spacing: var(--text-label--letter-spacing);
+    text-transform: uppercase;
+    color: var(--color-ink-3);
+  }
+
+  .contact-field input,
+  .contact-field textarea {
+    width: 100%;
+    border: 1px solid var(--color-rule);
+    border-radius: 0;
+    background: var(--color-plane-1);
+    color: var(--color-ink);
+    padding: 0.75rem;
+    font: inherit;
+  }
+
+  .contact-field textarea {
+    resize: vertical;
+  }
+
+  .contact-field input:focus,
+  .contact-field textarea:focus {
+    border-color: var(--color-accent);
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  .instrument-button {
+    border: 1px solid var(--color-rule-strong);
+    border-radius: 0;
+    background: var(--color-plane-1);
+    color: var(--color-ink);
+    padding: 0.65rem 0.9rem;
+    font-family: var(--font-mono);
+    font-size: var(--text-label);
+    letter-spacing: var(--text-label--letter-spacing);
+    text-transform: uppercase;
+  }
+
+  .instrument-button:hover:not(:disabled) {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+
+  .instrument-button:disabled { opacity: 0.6; cursor: wait; }
+
+  .svg-axis, .svg-label, .svg-note {
+    fill: var(--color-ink-3);
+    font-family: var(--font-plex-mono), ui-monospace, monospace;
+    font-size: 12px;
+  }
+
+  .svg-label { font-size: 11px; }
+  .svg-note { fill: var(--color-ink-2); font-size: 11px; }
+
+  @media (max-width: 640px) {
+    .background-table { table-layout: fixed; }
+    .background-table th:first-child, .background-table td:first-child { width: 46%; }
+    .background-table th:nth-child(2), .background-table td:nth-child(2) { width: 32%; }
+    .background-table th:last-child, .background-table td:last-child { width: 22%; }
+    .background-table td { overflow-wrap: anywhere; }
+  }
+
+  .note-prose > * + * { margin-top: 1.25rem; }
+  .note-prose h2 { font-size: var(--text-heading); line-height: var(--text-heading--line-height); }
+  .note-prose ul { list-style: square; padding-left: 1.35rem; }
+  .note-prose li + li { margin-top: 0.5rem; }
+
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .section-heading { overflow: hidden; }
+      .section-heading > span { display: block; animation: section-reveal 420ms cubic-bezier(0.2, 0, 0, 1) both; animation-timeline: view(); animation-range: entry 0% cover 25%; }
+      .section-rule { transform-origin: left; animation: rule-draw 320ms cubic-bezier(0.2, 0, 0, 1) both; animation-timeline: view(); animation-range: entry 0% cover 20%; }
+      .figure-bar { transform-box: fill-box; transform-origin: bottom; animation: bar-draw 380ms cubic-bezier(0.2, 0, 0, 1) both; animation-timeline: view(); animation-range: entry 0% cover 28%; }
+      .figure-line { stroke-dasharray: 1; stroke-dashoffset: 1; animation: line-draw 450ms cubic-bezier(0.2, 0, 0, 1) both; animation-timeline: view(); animation-range: entry 0% cover 28%; }
+    }
+  }
+
+  @keyframes section-reveal { from { transform: translateY(100%); } to { transform: translateY(0); } }
+  @keyframes rule-draw { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+  @keyframes bar-draw { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+  @keyframes line-draw { to { stroke-dashoffset: 0; } }
+}
+
+@media print {
+  @page { margin: 18mm; }
+  html, body { background: #fff !important; color: #111 !important; font-size: 11pt; }
+  body::before, .page-frame, .margin-toc, .measure-grid, .instrument-button, .contact-form, button, [aria-label="Sections"] { display: none !important; }
+  .doc-grid { display: block; padding: 0; }
+  .col-margin { margin-top: 1.2rem; }
+  .col-sidenote { border-left: 0; padding-left: 0; color: #333; font-size: 9pt; }
+  .col-sidenote::before { content: 'Note — '; font-family: ui-monospace, monospace; }
+  .col-wide, .col-measure { max-width: none; }
+  .spec-table, .spec-table td, .spec-table th { color: #111 !important; border-color: #777 !important; }
+  figure { break-inside: avoid; }
+  a { color: #111 !important; text-decoration: none; }
+  a[href^="http"]::after { content: ' (' attr(href) ')'; font-size: 8pt; word-break: break-all; }
+  .bg-plane-2 { background: #f0f0f0 !important; }
 }

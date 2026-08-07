@@ -34,6 +34,15 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.meta.url),
   title: siteConfig.meta.title,
   description: siteConfig.meta.description,
+  alternates: { canonical: '/', types: { 'text/plain': [{ url: '/llms.txt', title: 'LLMs.txt' }] } },
+  openGraph: {
+    title: siteConfig.meta.title,
+    description: siteConfig.meta.description,
+    url: siteConfig.meta.url,
+    siteName: 'yash.systems',
+    type: 'website',
+    images: [{ url: '/opengraph-image' }],
+  },
 };
 
 export default function RootLayout({

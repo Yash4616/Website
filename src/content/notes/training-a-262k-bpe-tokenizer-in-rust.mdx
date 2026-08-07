@@ -1,0 +1,16 @@
+---
+title: Training a 262k-vocabulary BPE tokenizer in Rust
+description: The case-study scaffold for the tokenizer’s training decisions, corpus filtering, and parity checks.
+date: 2026-08-07
+status: draft
+---
+
+This note is intentionally published as a draft scaffold rather than filling the gap with invented training history. The project entry records the README-verifiable corpus, vocabulary, throughput, and parity measurements; the decision narrative belongs here once it is written from the training logs and repository history.
+
+## What the completed note will document
+
+- Why the engine is Rust while the training pipeline is Python.
+- What the filtering removed from the source corpus, and why.
+- How parity with cl100k_base and o200k_base was checked.
+
+The route, metadata, structured data, and MDX source are already live, so replacing this draft is an edit to this one file rather than a new feature.

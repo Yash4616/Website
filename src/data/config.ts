@@ -399,6 +399,15 @@ export const siteConfig = validateConfig({
     availability: 'Available from 2027 · Research or applied ML · Remote or Jaipur',
   },
 
+  correspondence: {
+    intro:
+      'For research, applied ML, or engineering conversations, send a concise note. Direct contact details are listed below for anyone who would rather not use a form.',
+    nameLabel: 'Name',
+    emailLabel: 'Email',
+    messageLabel: 'Message',
+    submitLabel: 'Send message',
+  },
+
   links: [
     { label: 'GitHub', href: GH },
     { label: 'LinkedIn', href: 'https://linkedin.com/in/yashgurjar9' },
