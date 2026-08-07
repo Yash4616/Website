@@ -1,8 +1,9 @@
 'use client';
 
+import { Suspense } from 'react';
+import dynamic from 'next/dynamic';
 import { motion } from 'framer-motion';
 import { FiArrowDown } from 'react-icons/fi';
-import Aurora from '@/components/features/Aurora';
 import { siteConfig } from '@/data/config';
 import { SPRING_SMOOTH } from '@/lib/motion';
 import { useTypewriter } from '@/hooks/use-typewriter';
@@ -27,9 +28,31 @@ import { useLoaderRan } from '@/components/features/boot-gate';
  * Two bonuses: two entrance animations never stack, and everyone who skips the
  * loader or returns still sees the reveal.
  *
- * The OGL neural canvas replaces Aurora in Stage 3b; Aurora stays until that
- * renders correctly (§6.2).
+ * Stage 3b replaced Aurora with the OGL neural canvas (§6.2).
  */
+
+/**
+ * AP-5 — a WebGL canvas is never server-rendered. `ssr: false` plus a Suspense
+ * boundary with a styled skeleton, so the hero never shows a bare black gap
+ * while the chunk loads.
+ */
+const NeuralCanvas = dynamic(
+  () => import('@/components/features/neural-canvas').then((m) => m.NeuralCanvas),
+  {
+    ssr: false,
+    loading: () => <CanvasSkeleton />,
+  }
+);
+
+function CanvasSkeleton() {
+  return (
+    <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
+      <div className="absolute left-[-10%] top-[-20%] h-[70vh] w-[70vh] rounded-full bg-[radial-gradient(circle,rgba(0,240,255,0.08),transparent_70%)]" />
+      <div className="absolute bottom-[-25%] right-[-10%] h-[75vh] w-[75vh] rounded-full bg-[radial-gradient(circle,rgba(138,43,226,0.10),transparent_70%)]" />
+    </div>
+  );
+}
+
 export default function HeroSection() {
   const { prefersReduced } = useMotionSafe();
   const loaderRan = useLoaderRan();
@@ -59,11 +82,11 @@ export default function HeroSection() {
       aria-labelledby="hero-heading"
       className="relative flex min-h-dvh items-center overflow-hidden"
     >
-      {/* Background — z-0. Replaced by the OGL neural canvas in Stage 3b. */}
-      <div className="pointer-events-none absolute inset-0 z-0" aria-hidden="true">
-        <div className="absolute inset-x-0 top-0 h-[220px]">
-          <Aurora />
-        </div>
+      {/* Background — z-0, full viewport (§7 Stage 3c). */}
+      <div className="pointer-events-none absolute inset-0 z-0">
+        <Suspense fallback={<CanvasSkeleton />}>
+          <NeuralCanvas />
+        </Suspense>
       </div>
 
       {/* Foreground — z-10 */}
