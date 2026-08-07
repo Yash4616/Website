@@ -1,29 +1,48 @@
-import Link from 'next/link';
 import { siteConfig } from '@/data/config';
+import { Masthead } from '@/components/document/masthead';
+import { Summary } from '@/components/document/summary';
+import { Section } from '@/components/document/section';
+import { NotesList } from '@/components/document/notes';
+import { MarginToc } from '@/components/document/margin-toc';
+import { PageFrame } from '@/components/document/page-frame';
 
 /**
- * Placeholder. The document — masthead, summary, margin TOC, numbered sections
- * — is Stage 2 (REBUILD.md §11). Stage 1 delivers the design system, the ported
- * and validated data, and the specimen at /specimen for approval.
+ * The document shell — REBUILD.md §11, Stage 2.
  *
- * Deliberately not a preview of the design, so nothing here has to be un-built.
+ * Section bodies are deliberately empty: 01 lands in Stage 3, 02 and 03 in
+ * Stage 5, 04 in Stage 6, 05 in Stage 7. What ships here is the structure —
+ * masthead, summary, margin TOC, the section-header pattern, the note system,
+ * and the collected notes.
+ *
+ * A Server Component. `MarginToc` is the only client leaf on the page, and it
+ * exists to track one integer.
  */
 export default function Home() {
   return (
-    <main id="main" className="doc-grid min-h-screen items-center py-24">
-      <div className="col-measure">
-        <p className="label">yash.systems · {siteConfig.masthead.revision}</p>
-        <h1 className="mt-4 text-title">{siteConfig.masthead.name}</h1>
-        <p className="mt-1 font-mono text-data text-ink-3">{siteConfig.masthead.role}</p>
-        <hr className="rule-strong my-6" />
-        <p className="max-w-[60ch] text-body text-ink-2">
-          This document is being rebuilt. Stage 1 — fonts, colour tokens, three-track grid,
-          grain, registration marks, and validated content — is complete and awaiting review.
-        </p>
-        <p className="mt-6 font-mono text-data">
-          <Link href="/specimen">→ Typographic specimen</Link>
-        </p>
-      </div>
-    </main>
+    <>
+      <PageFrame />
+      <MarginToc sections={siteConfig.sections} />
+
+      <main id="main" className="relative pb-32">
+        {/* §2.4/3 — the measurement grid, at 3% opacity. Structure you register
+            without consciously seeing it. */}
+        <div className="measure-grid" aria-hidden="true">
+          <span style={{ left: '12%' }} />
+          <span style={{ left: '30%' }} />
+          <span style={{ left: '50%' }} />
+          <span style={{ left: '70%' }} />
+          <span style={{ left: '88%' }} />
+        </div>
+
+        <Masthead />
+        <Summary />
+
+        {siteConfig.sections.map((section) => (
+          <Section key={section.id} section={section} />
+        ))}
+
+        <NotesList />
+      </main>
+    </>
   );
 }

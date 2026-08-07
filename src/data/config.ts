@@ -60,6 +60,26 @@ export const siteConfig = validateConfig({
     { id: 'correspondence', mark: '05', title: 'Correspondence' },
   ],
 
+  /*
+   * Notes appear twice from one record: in the outer track beside their
+   * reference, and collected at the foot of the document with backlinks.
+   * Order here is the numbering, everywhere.
+   */
+  notes: [
+    {
+      id: 'measured-not-estimated',
+      text: 'Every number in this document comes from the repository it describes — a README, an eval output, or the GitHub API — and none is estimated. Where a figure could not be verified, the field is omitted rather than filled.',
+    },
+    {
+      id: 'resnet-f1',
+      text: 'The ResNet-18 README reports an F1 of 98.62%, which is arithmetically impossible from its own precision of 91.16% and recall of 85.35% — those give ≈88.16%. The figure is excluded here pending a re-run rather than silently corrected.',
+    },
+    {
+      id: 'no-star-counts',
+      text: 'Star and fork counts are omitted throughout. All seven repositories are at zero, and printing that seven times says less than saying nothing.',
+    },
+  ],
+
   projects: [
     {
       id: 'tokenizer',

@@ -155,6 +155,19 @@ export const docSectionSchema = z.object({
   title: nonEmpty,
 });
 
+/**
+ * A note — REBUILD.md §5 "NOTES & REFERENCES", §7/4 sidenotes.
+ *
+ * One record serves both surfaces. On a wide screen the text appears in the
+ * outer track beside its reference; at the foot of the document the same notes
+ * are collected and linked back. Numbering is the array index, so it is
+ * identical in both places and costs no JavaScript and no CSS counter.
+ */
+export const noteSchema = z.object({
+  id: z.string().regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, 'note id must be kebab-case'),
+  text: nonEmpty,
+});
+
 export const siteConfigSchema = z.object({
   meta: z.object({
     title: nonEmpty,
@@ -172,6 +185,12 @@ export const siteConfigSchema = z.object({
   /** A positioning statement, not a bio (§5). */
   summary: z.array(nonEmpty).min(1),
   sections: z.array(docSectionSchema).min(1),
+  notes: z
+    .array(noteSchema)
+    .refine(
+      (notes) => new Set(notes.map((n) => n.id)).size === notes.length,
+      { message: 'notes: ids must be unique — they are anchor targets' }
+    ),
   projects: z.array(projectEntrySchema).min(1),
   methods: z.array(methodGroupSchema).min(1),
   background: z.array(backgroundEntrySchema).min(1),
@@ -194,6 +213,7 @@ export type BackgroundEntry = z.infer<typeof backgroundEntrySchema>;
 export type ContactFacts = z.infer<typeof contactFactsSchema>;
 export type ExternalLink = z.infer<typeof externalLinkSchema>;
 export type DocSection = z.infer<typeof docSectionSchema>;
+export type Note = z.infer<typeof noteSchema>;
 export type SiteConfig = z.infer<typeof siteConfigSchema>;
 
 /**

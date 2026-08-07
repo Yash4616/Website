@@ -68,6 +68,9 @@
   --track-margin: 8rem;
   --track-sidenote: 15rem;
   --track-gap: 2.5rem;
+  /* margin 128 + gap 40 + measure ~701 + gap 40 + sidenote 240. Used by the
+     fixed margin TOC to reproduce the grid's centring. */
+  --doc-width: 1149px;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -338,6 +341,120 @@
     font-size: 0.85em;
     color: var(--color-ink-3);
     margin-left: 0.35em;
+  }
+
+  /*
+   * Note reference — superscript mono numeral in the accent (§2.2, §5).
+   * `line-height: 0` keeps the raised numeral from opening up the line it sits
+   * on, which would break the body leading wherever a note appears.
+   */
+  .note-ref {
+    font-family: var(--font-mono);
+    font-size: 0.68em;
+    vertical-align: super;
+    line-height: 0;
+    color: var(--color-accent);
+    text-decoration: none;
+    padding-inline: 0.2em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .note-ref:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.3em;
+  }
+
+  /* The numeral leading a note in the margin. */
+  .note-num {
+    font-family: var(--font-mono);
+    font-size: 0.72em;
+    vertical-align: super;
+    line-height: 0;
+    color: var(--color-accent);
+    margin-right: 0.4em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /*
+   * Margin table of contents (§7/2).
+   *
+   * Fixed rather than sticky: each section is its own `.doc-grid`, so there is
+   * no single grid row for a sticky item to travel down. `--doc-width` is the
+   * grid's maximum content width, so the same centring maths that `justify-
+   * content: center` performs is reproduced here to line the TOC up with the
+   * margin track.
+   */
+  .margin-toc {
+    position: fixed;
+    top: 50%;
+    left: max(2rem, calc(50vw - var(--doc-width) / 2));
+    width: var(--track-margin);
+    transform: translateY(-50%);
+    z-index: 20;
+  }
+
+  .margin-toc ol {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .margin-toc a {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: var(--text-label);
+    letter-spacing: var(--text-label--letter-spacing);
+    text-transform: uppercase;
+    color: var(--color-ink-3);
+    text-decoration: none;
+    border-left: 1px solid var(--color-rule);
+    padding-left: 0.6rem;
+    transition:
+      color 200ms cubic-bezier(0.2, 0, 0, 1),
+      border-color 200ms cubic-bezier(0.2, 0, 0, 1);
+  }
+
+  .margin-toc a span:first-child {
+    display: block;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .margin-toc a span:last-child {
+    display: block;
+    margin-top: 0.15rem;
+    font-size: 0.95em;
+    letter-spacing: 0.04em;
+  }
+
+  .margin-toc a:hover {
+    color: var(--color-ink-2);
+    border-left-color: var(--color-rule-strong);
+  }
+
+  .margin-toc a[data-active] {
+    color: var(--color-accent);
+    border-left-color: var(--color-accent);
+  }
+
+  @media (max-width: 1279px) {
+    .margin-toc {
+      display: none;
+    }
+  }
+
+  /* Registration ticks at the four page corners (§5). Pure apparatus. */
+  .page-frame {
+    position: fixed;
+    inset: 1.25rem;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  .page-frame span {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-color: var(--color-rule-strong);
   }
 
   /* Spec table — rules, not borders; mono; tabular (§5). */
