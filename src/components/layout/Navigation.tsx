@@ -1,262 +1,342 @@
-"use client"
+'use client';
 
-import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
-import Link from 'next/link'
-import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
-import { LiquidGlassLinkButton } from '@/components/ui/liquid-glass-button'
-import { FaGithub, FaLinkedin, FaXTwitter } from 'react-icons/fa6'
-import { FiDownload, FiMenu, FiX, FiHome, FiUser, FiCode, FiFolderPlus, FiMail } from 'react-icons/fi'
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import Link from 'next/link';
+import { cn } from '@/lib/utils';
+import { siteConfig } from '@/data/config';
+import { SPRING_SNAPPY } from '@/lib/motion';
+import { FaGithub, FaLinkedin, FaXTwitter } from 'react-icons/fa6';
+import { FiDownload, FiMenu, FiX } from 'react-icons/fi';
 
-interface NavItem {
-  name: string
-  href: string
-  icon: React.ReactNode
-}
+/**
+ * Navigation — MASTER_PLAN.md §7 Stage 3a.
+ *
+ * Filename kept as Navigation.tsx per D10/A9 — the plan's tree says "Navbar.tsx"
+ * but D10 locks the existing structure, and renaming buys nothing.
+ *
+ * Every label and href comes from `siteConfig.footer.quickLinks` and
+ * `siteConfig.social` (§5.1). Adding a section means editing config, not this
+ * file.
+ */
 
-const navItems: NavItem[] = [
-  { name: 'Home', href: '#hero', icon: <FiHome className="h-4 w-4" /> },
-  { name: 'About', href: '#about', icon: <FiUser className="h-4 w-4" /> },
-  { name: 'Skills', href: '#skills', icon: <FiCode className="h-4 w-4" /> },
-  { name: 'Projects', href: '#projects', icon: <FiFolderPlus className="h-4 w-4" /> },
-  { name: 'Contact', href: '#contact', icon: <FiMail className="h-4 w-4" /> },
-]
+const SCROLL_THRESHOLD = 100; // §7 Stage 3a
+const SECTION_RATIO = 0.4;
 
-function TubelightNavbar({
-  items,
-  activeTab,
-  setActiveTab,
-}: {
-  items: NavItem[]
-  activeTab: string
-  setActiveTab: (name: string) => void
-}) {
+const SOCIAL_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
+  github: FaGithub,
+  linkedin: FaLinkedin,
+  x: FaXTwitter,
+};
+
+/** The YG monogram (§7 Stage 3a) — 32px, cyan, inline SVG so it inherits colour. */
+function Monogram({ className }: { className?: string }) {
   return (
-    <div className="flex items-center gap-0.5 bg-muted/40 backdrop-blur-xl p-1.5 rounded-full border border-border/40 shadow-lg shadow-black/5">
-      {items.map((item) => {
-        const isActive = activeTab === item.name
-        return (
-          <Link
-            key={item.name}
-            href={item.href}
-            onClick={(e) => {
-              e.preventDefault()
-              setActiveTab(item.name)
-              const element = document.querySelector(item.href)
-              if (element) {
-                element.scrollIntoView({ behavior: 'smooth' })
-              }
-            }}
-            className={cn(
-              "relative px-4 py-2 text-sm font-medium rounded-full",
-              isActive ? "text-foreground" : "text-muted-foreground hover:text-foreground/80"
-            )}
-          >
-            {/* Single animated pill with glow effect */}
-            {isActive && (
-              <motion.div
-                layoutId="active-pill"
-                className="absolute inset-0 rounded-full bg-background border border-border/60"
-                style={{
-                  boxShadow: `
-                    0 0 0 1px hsl(var(--border) / 0.3),
-                    0 1px 3px hsl(0 0% 0% / 0.1),
-                    inset 0 1px 0 hsl(0 0% 100% / 0.1)
-                  `,
-                }}
-                transition={{
-                  type: 'tween',
-                  ease: [0.25, 0.1, 0.25, 1],
-                  duration: 0.2,
-                }}
-              >
-                {/* Tubelight glow - top edge */}
-                <div
-                  className="absolute -top-px left-3 right-3 h-px rounded-full"
-                  style={{
-                    background: 'linear-gradient(90deg, transparent 0%, hsl(0 0% 100% / 0.5) 50%, transparent 100%)',
-                    boxShadow: '0 0 6px 1px hsl(0 0% 100% / 0.25)',
-                  }}
-                />
-              </motion.div>
-            )}
-
-            {/* Desktop: Text only */}
-            <span className="relative z-10 hidden sm:block">{item.name}</span>
-
-            {/* Mobile: Icon only */}
-            <span className="relative z-10 sm:hidden">{item.icon}</span>
-          </Link>
-        )
-      })}
-    </div>
-  )
+    <svg viewBox="0 0 32 32" className={className} role="img" aria-label="YG monogram">
+      <path
+        d="M4 6 L10 15 L10 26"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path d="M16 6 L10 15" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+      <path
+        d="M28 12 A7 7 0 1 0 28 20 L28 20 L23 20"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
 }
-
 
 export default function Navigation() {
-  const [isScrolled, setIsScrolled] = useState(false)
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [activeTab, setActiveTab] = useState('Home')
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [activeId, setActiveId] = useState<string>('');
 
+  const links = siteConfig.footer.quickLinks;
+  const panelRef = useRef<HTMLDivElement>(null);
+  const toggleRef = useRef<HTMLButtonElement>(null);
+
+  /** Scroll state, coalesced into one rAF so we never thrash layout. */
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10)
+    let ticking = false;
+    const update = () => {
+      ticking = false;
+      setIsScrolled(window.scrollY > SCROLL_THRESHOLD);
+    };
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
-      // Update active tab based on scroll position
-      const sections = navItems.map(item => ({
-        name: item.name,
-        element: document.querySelector(item.href)
-      }))
+  /**
+   * Active section via IntersectionObserver at threshold 0.4 (§7 Stage 3a) —
+   * not scroll-position maths, which forces a reflow on every tick.
+   */
+  useEffect(() => {
+    const sections = links
+      .map((link) => document.querySelector(link.href))
+      .filter((el): el is Element => el instanceof Element);
 
-      for (let i = sections.length - 1; i >= 0; i--) {
-        const section = sections[i]
-        if (section.element) {
-          const rect = section.element.getBoundingClientRect()
-          if (rect.top <= 150) {
-            setActiveTab(section.name)
-            break
-          }
+    if (sections.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) setActiveId(`#${entry.target.id}`);
         }
-      }
-    }
+      },
+      { threshold: SECTION_RATIO }
+    );
 
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
+  }, [links]);
+
+  /** Body scroll lock while the mobile overlay is open. */
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = previous;
+    };
+  }, [mobileOpen]);
+
+  /** Escape closes, and focus is trapped inside the overlay while it is open. */
+  useEffect(() => {
+    if (!mobileOpen) return;
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setMobileOpen(false);
+        toggleRef.current?.focus();
+        return;
+      }
+      if (event.key !== 'Tab') return;
+
+      const focusables = panelRef.current?.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled])'
+      );
+      if (!focusables || focusables.length === 0) return;
+
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener('keydown', onKeyDown);
+    // Move focus into the panel so the trap has somewhere to start.
+    panelRef.current?.querySelector<HTMLElement>('a[href]')?.focus();
+
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, [mobileOpen]);
+
+  const goTo = useCallback((href: string) => {
+    setMobileOpen(false);
+    document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' });
+  }, []);
 
   return (
     <header
       className={cn(
-        'fixed top-0 w-full z-50 transition-all duration-300 overflow-x-hidden',
+        'fixed top-0 z-50 w-full transition-colors duration-300',
         isScrolled
-          ? 'bg-background/80 backdrop-blur-md border-b shadow-sm'
+          ? 'border-b border-edge-subtle bg-surface-primary/80 backdrop-blur-xl'
           : 'bg-transparent'
       )}
     >
-      <div className="container flex h-16 items-center justify-between">
-        {/* Logo */}
+      <div className="mx-auto flex h-16 w-full max-w-content items-center justify-between px-6 lg:px-8">
         <Link
-          href="#hero"
-          className="text-xl font-bold tracking-tight hover:text-primary transition-colors"
-          onClick={(e) => {
-            e.preventDefault()
-            setActiveTab('Home')
-            const element = document.querySelector('#hero')
-            if (element) {
-              element.scrollIntoView({ behavior: 'smooth' })
-            }
+          href="/#hero"
+          aria-label={siteConfig.hero.name}
+          onClick={(event) => {
+            event.preventDefault();
+            goTo('#hero');
           }}
+          className="text-cyan-accent transition-opacity hover:opacity-80"
+          data-cursor="pointer"
         >
-          Yash Gurjar
+          <Monogram className="h-8 w-8" />
         </Link>
 
-        {/* Desktop navigation with Tubelight effect */}
-        <nav className="hidden lg:flex items-center gap-6">
-          <TubelightNavbar
-            items={navItems}
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-          />
-
-          <div className="flex items-center gap-4">
-            <div className="flex gap-2">
-              <Button variant="ghost" size="icon" className="rounded-full" asChild>
-                <Link href="https://github.com/Yash4616" target="_blank" rel="noopener noreferrer" aria-label="View GitHub profile (opens in new tab)">
-                  <FaGithub className="h-[1.2rem] w-[1.2rem]" aria-hidden="true" />
-                  <span className="sr-only">GitHub</span>
-                </Link>
-              </Button>
-              <Button variant="ghost" size="icon" className="rounded-full" asChild>
-                <Link href="https://linkedin.com/in/yashgurjar9" target="_blank" rel="noopener noreferrer" aria-label="View LinkedIn profile (opens in new tab)">
-                  <FaLinkedin className="h-[1.2rem] w-[1.2rem]" aria-hidden="true" />
-                  <span className="sr-only">LinkedIn</span>
-                </Link>
-              </Button>
-              <Button variant="ghost" size="icon" className="rounded-full" asChild>
-                <Link href="https://x.com/Yash_9724" target="_blank" rel="noopener noreferrer" aria-label="View X/Twitter profile (opens in new tab)">
-                  <FaXTwitter className="h-[1.2rem] w-[1.2rem]" aria-hidden="true" />
-                  <span className="sr-only">Twitter</span>
-                </Link>
-              </Button>
-            </div>
-            <LiquidGlassLinkButton
-              href="/assets/pdfs/Yash_Resume.pdf"
-              download
-              size="sm"
-              aria-label="Download Resume (PDF)"
-            >
-              <FiDownload className="h-4 w-4" aria-hidden="true" />
-              Resume
-            </LiquidGlassLinkButton>
-          </div>
+        {/* Desktop links */}
+        <nav aria-label="Sections" className="hidden lg:block">
+          <ul className="flex items-center gap-1">
+            {links.map((link) => {
+              const isActive = activeId === link.href;
+              return (
+                <li key={link.href}>
+                  <a
+                    href={link.href}
+                    onClick={(event) => {
+                      event.preventDefault();
+                      goTo(link.href);
+                    }}
+                    aria-current={isActive ? 'true' : undefined}
+                    className={cn(
+                      'relative block px-4 py-2 text-sm transition-colors',
+                      isActive
+                        ? 'text-content-primary'
+                        : 'text-content-secondary hover:text-content-primary'
+                    )}
+                  >
+                    {link.label}
+                    {isActive && (
+                      <motion.span
+                        layoutId="navIndicator"
+                        transition={SPRING_SNAPPY}
+                        className="absolute inset-x-3 -bottom-px h-px bg-cyan-accent"
+                        style={{ boxShadow: '0 0 8px rgba(0,240,255,0.8)' }}
+                      />
+                    )}
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
         </nav>
 
-        {/* Mobile menu button */}
-        <div className="flex lg:hidden items-center gap-4">
-          <Button variant="ghost" size="icon" className="min-w-[44px] min-h-[44px]" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} aria-label="Toggle menu" aria-expanded={mobileMenuOpen}>
-            <div className="relative w-6 h-6">
-              <FiMenu className={`absolute inset-0 h-6 w-6 transition-opacity duration-200 ${mobileMenuOpen ? 'opacity-0' : 'opacity-100'}`} aria-hidden="true" />
-              <FiX className={`absolute inset-0 h-6 w-6 transition-opacity duration-200 ${mobileMenuOpen ? 'opacity-100' : 'opacity-0'}`} aria-hidden="true" />
-            </div>
-          </Button>
+        {/* Desktop socials + resume */}
+        <div className="hidden items-center gap-4 lg:flex">
+          <ul className="flex items-center gap-1">
+            {siteConfig.social.map((social) => {
+              const Icon = SOCIAL_ICONS[social.icon];
+              if (!Icon) return null;
+              return (
+                <li key={social.href}>
+                  <Link
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`${social.label} (opens in a new tab)`}
+                    className="flex h-9 w-9 items-center justify-center rounded-full text-content-secondary transition-colors hover:text-cyan-accent"
+                  >
+                    <Icon className="h-[1.1rem] w-[1.1rem]" />
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+          <Link
+            href={siteConfig.resumeUrl}
+            download
+            data-cursor="magnetic"
+            className="flex items-center gap-2 rounded-full border border-edge-accent px-4 py-2 text-sm text-cyan-accent transition-all hover:bg-cyan-accent/10 hover:shadow-glow-cyan"
+          >
+            <FiDownload className="h-4 w-4" aria-hidden="true" />
+            Resume
+          </Link>
         </div>
+
+        {/* Mobile toggle — 44px tap target (§12.3) */}
+        <button
+          ref={toggleRef}
+          type="button"
+          onClick={() => setMobileOpen((open) => !open)}
+          aria-expanded={mobileOpen}
+          aria-controls="mobile-nav"
+          aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
+          className="flex h-11 w-11 items-center justify-center rounded-full text-content-primary lg:hidden"
+        >
+          {mobileOpen ? (
+            <FiX className="h-6 w-6" aria-hidden="true" />
+          ) : (
+            <FiMenu className="h-6 w-6" aria-hidden="true" />
+          )}
+        </button>
       </div>
 
-      {/* Mobile navigation */}
-      {mobileMenuOpen && (
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -10 }}
-          className="lg:hidden bg-background/95 backdrop-blur-md border-b pb-4 overflow-x-hidden"
-        >
-          <nav className="container px-4 py-3">
-            {/* Mobile Tubelight Navbar */}
-            <div className="flex justify-center mb-4">
-              <TubelightNavbar
-                items={navItems}
-                activeTab={activeTab}
-                setActiveTab={(name) => {
-                  setActiveTab(name)
-                  setMobileMenuOpen(false)
-                }}
-              />
-            </div>
+      {/* Mobile full-screen overlay */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            id="mobile-nav"
+            ref={panelRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Site navigation"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 top-16 z-40 bg-void px-6 pt-10 lg:hidden"
+          >
+            <motion.ul
+              initial="hidden"
+              animate="visible"
+              variants={{ visible: { transition: { staggerChildren: 0.06 } } }}
+              className="flex flex-col gap-2"
+            >
+              {links.map((link) => (
+                <motion.li
+                  key={link.href}
+                  variants={{
+                    hidden: { opacity: 0, y: 20 },
+                    visible: { opacity: 1, y: 0 },
+                  }}
+                >
+                  <a
+                    href={link.href}
+                    onClick={(event) => {
+                      event.preventDefault();
+                      goTo(link.href);
+                    }}
+                    className="block py-3 text-2xl text-content-primary"
+                  >
+                    {link.label}
+                  </a>
+                </motion.li>
+              ))}
+            </motion.ul>
 
-            <div className="flex justify-center flex-wrap gap-2 pt-2">
-              <Button variant="ghost" size="icon" className="rounded-full" asChild>
-                <Link href="https://github.com/Yash4616" target="_blank" rel="noopener noreferrer" aria-label="View GitHub profile (opens in new tab)">
-                  <FaGithub className="h-5 w-5" aria-hidden="true" />
-                  <span className="sr-only">GitHub</span>
-                </Link>
-              </Button>
-              <Button variant="ghost" size="icon" className="rounded-full" asChild>
-                <Link href="https://linkedin.com/in/yashgurjar9" target="_blank" rel="noopener noreferrer" aria-label="View LinkedIn profile (opens in new tab)">
-                  <FaLinkedin className="h-5 w-5" aria-hidden="true" />
-                  <span className="sr-only">LinkedIn</span>
-                </Link>
-              </Button>
-              <Button variant="ghost" size="icon" className="rounded-full" asChild>
-                <Link href="https://x.com/Yash_9724" target="_blank" rel="noopener noreferrer" aria-label="View X/Twitter profile (opens in new tab)">
-                  <FaXTwitter className="h-5 w-5" aria-hidden="true" />
-                  <span className="sr-only">Twitter</span>
-                </Link>
-              </Button>
-              <LiquidGlassLinkButton
-                href="/assets/pdfs/Yash_Resume.pdf"
+            <div className="mt-10 flex items-center gap-3 border-t border-edge-subtle pt-8">
+              {siteConfig.social.map((social) => {
+                const Icon = SOCIAL_ICONS[social.icon];
+                if (!Icon) return null;
+                return (
+                  <Link
+                    key={social.href}
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`${social.label} (opens in a new tab)`}
+                    className="flex h-11 w-11 items-center justify-center rounded-full border border-edge text-content-secondary"
+                  >
+                    <Icon className="h-5 w-5" />
+                  </Link>
+                );
+              })}
+              <Link
+                href={siteConfig.resumeUrl}
                 download
-                size="sm"
-                aria-label="Download Resume (PDF)"
+                className="flex h-11 items-center gap-2 rounded-full border border-edge-accent px-5 text-sm text-cyan-accent"
               >
                 <FiDownload className="h-4 w-4" aria-hidden="true" />
                 Resume
-              </LiquidGlassLinkButton>
+              </Link>
             </div>
-          </nav>
-        </motion.div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
-  )
+  );
 }

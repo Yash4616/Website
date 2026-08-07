@@ -55,11 +55,13 @@ const nextConfig: NextConfig = {
   // at the hosting platform level (Vercel, Netlify, etc.)
   // These headers are included here for reference and will work with 'next start'
   //
-  // ⚠ TWO KNOWN AMENDMENTS ARE DUE HERE — do not forget them:
-  //   Stage 3: the neural canvas runs in a Web Worker via OffscreenCanvas (§9.2),
-  //            which needs `worker-src 'self' blob:` added to the CSP.
+  // ⚠ ONE KNOWN AMENDMENT IS STILL DUE HERE:
   //   Stage 7: the Resend contact route needs Resend's API host in `connect-src`.
-  // The block below is otherwise preserved verbatim from next.config.js.
+  //
+  // A26 — `worker-src 'self' blob:` is already in place, added ahead of the
+  // OffscreenCanvas migration (§9.2) deliberately: with the policy landed first,
+  // a CSP rejection can never be mistaken for a renderer bug while debugging the
+  // worker. The block is otherwise preserved verbatim from next.config.js.
   async headers() {
     return [
       {
@@ -96,7 +98,7 @@ const nextConfig: NextConfig = {
           {
             key: 'Content-Security-Policy',
             value:
-              "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://images.pexels.com; font-src 'self' data:; connect-src 'self' https://vitals.vercel-insights.com https://va.vercel-scripts.com; frame-ancestors 'self';",
+              "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://images.pexels.com; font-src 'self' data:; connect-src 'self' https://vitals.vercel-insights.com https://va.vercel-scripts.com; worker-src 'self' blob:; frame-ancestors 'self';",
           },
         ],
       },

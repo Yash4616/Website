@@ -1,154 +1,176 @@
-"use client"
+'use client';
 
-import { useState, useEffect } from 'react'
-import { Button } from '@/components/ui/button'
+import { motion } from 'framer-motion';
+import { FiArrowDown } from 'react-icons/fi';
 import Aurora from '@/components/features/Aurora';
-import { TextReveal } from '@/components/ui/text-reveal'
-import { motion } from 'framer-motion'
-import { FiArrowDown, FiEye } from 'react-icons/fi'
+import { siteConfig } from '@/data/config';
+import { SPRING_SMOOTH } from '@/lib/motion';
+import { useTypewriter } from '@/hooks/use-typewriter';
+import { useMotionSafe } from '@/hooks/use-motion-safe';
+import { useLoaderRan } from '@/components/features/boot-gate';
 
-const TYPING_TEXTS = ['Computer Vision', 'Neural Networks', 'TensorFlow', 'Machine Learning', 'Deep Learning', 'NLP', 'Artificial Intelligence'] as const;
-const TYPING_SPEED = 100;
-const DELETING_SPEED = 50;
-
+/**
+ * Hero — MASTER_PLAN.md §7 Stage 3c.
+ *
+ * ── A25: the entrance is conditional, and that is a performance decision ─────
+ * The clip-mask reveal runs ONLY when the loader did not play (return visit or
+ * reduced motion). When the loader played, the hero renders in its final
+ * composed state behind it.
+ *
+ * The reason is LCP, and it is worth stating plainly so nobody "fixes" this
+ * later: a clip-masked <h1> is translated outside its `overflow-hidden` parent,
+ * so it is not visible, so it is not a contentful paint. Animating it
+ * unconditionally would push LCP from ~1.6 s to ~3.8 s — losing the 2.5 s budget
+ * to win a gate line. The Stage 3 gate is therefore "LCP resolves to the <h1>
+ * and stays under 2.5 s", not "the h1 animates".
+ *
+ * Two bonuses: two entrance animations never stack, and everyone who skips the
+ * loader or returns still sees the reveal.
+ *
+ * The OGL neural canvas replaces Aurora in Stage 3b; Aurora stays until that
+ * renders correctly (§6.2).
+ */
 export default function HeroSection() {
-  const [typedText, setTypedText] = useState('')
-  const [textIndex, setTextIndex] = useState(0)
-  const [charIndex, setCharIndex] = useState(0)
-  const [isDeleting, setIsDeleting] = useState(false)
+  const { prefersReduced } = useMotionSafe();
+  const loaderRan = useLoaderRan();
 
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      // Current text being typed
-      const currentText = TYPING_TEXTS[textIndex]
+  // The loader's split-reveal is the entrance when it played.
+  const playEntrance = !loaderRan && !prefersReduced;
 
-      // If deleting
-      if (isDeleting) {
-        setTypedText(currentText.substring(0, charIndex - 1))
-        setCharIndex(charIndex - 1)
+  const typed = useTypewriter(siteConfig.hero.typewriterWords, {
+    typeMs: 80,
+    deleteMs: 40,
+    pauseMs: 2000,
+    disabled: prefersReduced,
+  });
 
-        // If done deleting
-        if (charIndex <= 1) {
-          setIsDeleting(false)
-          setTextIndex((textIndex + 1) % TYPING_TEXTS.length)
+  const reveal = (delay: number) =>
+    playEntrance
+      ? {
+          initial: { opacity: 0, y: 24 },
+          animate: { opacity: 1, y: 0 },
+          transition: { ...SPRING_SMOOTH, delay },
         }
-      }
-      // If typing
-      else {
-        setTypedText(currentText.substring(0, charIndex + 1))
-        setCharIndex(charIndex + 1)
-
-        // If done typing
-        if (charIndex >= currentText.length) {
-          // Pause before deleting
-          if (!isDeleting) {
-            // We need to pause here, but this useEffect structure makes it hard without extra state.
-            // Simplest fix: just don't set isDeleting immediately if we want pause?
-            // Actually, let's keep it simple: just let it delete immediately for now to avoid complexity, 
-            // or use a delay mechanism if I can.
-            // But to strictly follow 'restore' without breaking:
-            setIsDeleting(true)
-          }
-        }
-      }
-    }, isDeleting ? DELETING_SPEED : TYPING_SPEED)
-
-    return () => clearTimeout(timeout)
-  }, [charIndex, textIndex, isDeleting])
-
-  const scrollToProjects = () => {
-    const element = document.querySelector('#projects')
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' })
-    }
-  }
-
-  const scrollToContact = () => {
-    const element = document.querySelector('#contact')
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' })
-    }
-  }
+      : {};
 
   return (
     <section
       id="hero"
-      className="min-h-dvh relative flex items-center overflow-hidden pt-16"
+      aria-labelledby="hero-heading"
+      className="relative flex min-h-dvh items-center overflow-hidden"
     >
-      {/* Aurora background effect */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
-        <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '220px' }}>
+      {/* Background — z-0. Replaced by the OGL neural canvas in Stage 3b. */}
+      <div className="pointer-events-none absolute inset-0 z-0" aria-hidden="true">
+        <div className="absolute inset-x-0 top-0 h-[220px]">
           <Aurora />
         </div>
-        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-10 w-72 h-72 bg-blue-500/5 rounded-full blur-3xl" />
       </div>
 
-      {/* Content */}
-      <div className="container z-10 relative">
-        <div className="max-w-3xl flex flex-col gap-4">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-none">
-            <TextReveal
-              text="Yash Gurjar"
-              staggerDelay={0.06}
-              delay={0.2}
-            />
-            <span className="block text-foreground mt-0.5">
-              <TextReveal
-                text="AI & ML Engineer"
-                staggerDelay={0.04}
-                delay={0.8}
-              />
-            </span>
-          </h1>
+      {/* Foreground — z-10 */}
+      <div className="relative z-10 w-full px-8 lg:px-20">
+        <div className="flex max-w-4xl flex-col items-start">
+          {/*
+            The name is real text, never an image — the gradient is CSS
+            (§7 Stage 3c).
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="h-8"
-          >
-            <p className="text-xl sm:text-2xl font-medium text-muted-foreground">
-              Specializing in <span className="text-primary pl-2">{typedText}</span>
-            </p>
-          </motion.div>
+            Two shapes, deliberately. LCP attributes to the innermost element
+            that carries the text, so the wrapper span the reveal needs would
+            take LCP attribution away from the <h1> itself. In the common path
+            (loader ran, no entrance) the text sits directly in the <h1> with no
+            wrapper at all, which is both what the gate asks for and one DOM node
+            fewer. The wrapper exists only where the reveal actually runs.
+          */}
+          {playEntrance ? (
+            <h1
+              id="hero-heading"
+              className="text-5xl font-bold tracking-tight md:text-8xl lg:text-9xl"
+            >
+              <span className="block overflow-hidden">
+                <motion.span
+                  className="block bg-gradient-accent bg-clip-text text-transparent"
+                  style={{ textShadow: '0 0 40px rgba(0,240,255,0.15)' }}
+                  initial={{ y: '100%' }}
+                  animate={{ y: 0 }}
+                  transition={SPRING_SMOOTH}
+                >
+                  {siteConfig.hero.name}
+                </motion.span>
+              </span>
+            </h1>
+          ) : (
+            <h1
+              id="hero-heading"
+              className="bg-gradient-accent bg-clip-text text-5xl font-bold tracking-tight text-transparent md:text-8xl lg:text-9xl"
+              style={{ textShadow: '0 0 40px rgba(0,240,255,0.15)' }}
+            >
+              {siteConfig.hero.name}
+            </h1>
+          )}
 
           <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-lg text-muted-foreground max-w-2xl"
+            className="mt-4 text-2xl font-light tracking-wide text-white/80"
+            {...reveal(0.3)}
           >
-            Turning complex data into intelligent solutions through innovative AI/ML algorithms and deep learning architectures.
+            {siteConfig.hero.title}
           </motion.p>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="mt-2 flex flex-wrap gap-4"
+          {/*
+            Fixed min-height reserves the line so cycling never shifts layout
+            (§11.1, CLS < 0.1).
+          */}
+          <motion.p
+            className="mt-3 flex min-h-[2.25rem] items-center font-mono text-base text-cyan-accent sm:text-lg"
+            aria-live="off"
+            {...reveal(0.45)}
           >
-            <Button size="lg" onClick={scrollToProjects} className="gap-2">
-              <FiEye className="h-5 w-5" aria-hidden="true" />
-              View Projects
-            </Button>
-            <Button size="lg" variant="outline" onClick={scrollToContact}>
-              Contact Me
-            </Button>
+            <span className="text-content-secondary">
+              {siteConfig.hero.typewriterPrefix}
+            </span>
+            <span>{typed}</span>
+            <span className="ml-0.5 animate-blink" aria-hidden="true">
+              |
+            </span>
+          </motion.p>
+
+          <motion.div className="mt-10 flex flex-wrap gap-4" {...reveal(0.6)}>
+            <a
+              href={siteConfig.hero.primaryCta.href}
+              data-cursor="magnetic"
+              onClick={(event) => {
+                event.preventDefault();
+                document
+                  .querySelector(siteConfig.hero.primaryCta.href)
+                  ?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="rounded-full border-2 border-cyan-accent px-8 py-4 text-content-primary transition-all hover:scale-[1.02] hover:bg-cyan-accent/10 hover:shadow-glow-cyan"
+            >
+              {siteConfig.hero.primaryCta.label}
+            </a>
+            <a
+              href={siteConfig.hero.secondaryCta.href}
+              download
+              data-cursor="magnetic"
+              className="rounded-full border border-edge bg-white/5 px-8 py-4 text-content-primary backdrop-blur-sm transition-all hover:border-edge-hover hover:scale-[1.02]"
+            >
+              {siteConfig.hero.secondaryCta.label}
+            </a>
           </motion.div>
         </div>
       </div>
 
-      {/* Scroll indicator */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center">
-        <span className="text-sm text-muted-foreground mb-2">Scroll to explore</span>
-        <motion.div
-          animate={{ y: [0, 10, 0] }}
-          transition={{ duration: 1.5, repeat: Infinity }}
+      {/* Scroll hint */}
+      <div className="absolute inset-x-0 bottom-8 z-10 flex flex-col items-center gap-2">
+        <span className="text-xs uppercase tracking-widest text-white/30">
+          {siteConfig.hero.scrollHint}
+        </span>
+        <motion.span
+          animate={prefersReduced ? undefined : { y: [0, 8, 0] }}
+          transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
+          aria-hidden="true"
         >
-          <FiArrowDown className="h-6 w-6 text-muted-foreground" aria-hidden="true" />
-        </motion.div>
+          <FiArrowDown className="h-5 w-5 text-white/30" />
+        </motion.span>
       </div>
     </section>
-  )
+  );
 }
