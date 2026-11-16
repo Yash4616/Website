@@ -1,39 +1,29 @@
 {
-  "name": "yash-systems",
-  "version": "3.0.0",
+  "name": "port",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "typecheck": "tsc --noEmit",
-    "check:links": "node scripts/check-links.mjs",
-    "generate:grain": "node scripts/generate-grain.mjs"
+    "test": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/test-alias.mjs --test \"tests/*.test.ts\""
   },
   "dependencies": {
-    "clsx": "^2.1.1",
-    "gray-matter": "^4.0.3",
-    "next": "15.5.23",
-    "next-mdx-remote": "^6.0.0",
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
-    "tailwind-merge": "^3.3.1",
-    "zod": "^3.25.76"
+    "@vercel/analytics": "^2.0.1",
+    "next": "16.4.6",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
-    "@tailwindcss/postcss": "^4",
+    "@tailwindcss/turbopack": "4.3.3",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "15.5.23",
-    "tailwindcss": "^4",
+    "eslint-config-next": "16.4.6",
+    "tailwindcss": "4.3.3",
     "typescript": "^5"
-  },
-  "overrides": {
-    "postcss": "^8.5.26",
-    "sharp": "^0.35.3"
   }
 }

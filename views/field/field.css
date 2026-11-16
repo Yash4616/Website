@@ -1,0 +1,329 @@
+/* The Field: a full-viewport stage with a canvas and a few DOM overlays. */
+
+.stage {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+}
+
+.host {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  cursor: grab;
+}
+.host:active {
+  cursor: grabbing;
+}
+
+.field-canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  transition: opacity 0.32s ease;
+}
+
+/* A portal is open: the Field recedes. */
+.stage[data-receded] {
+  pointer-events: none;
+}
+.stage[data-receded] .field-canvas {
+  opacity: 0;
+}
+.stage[data-receded] .hint,
+.stage[data-receded] .query,
+.stage[data-receded] .card {
+  visibility: hidden;
+}
+.field-root:has(.stage[data-receded]) .plate {
+  visibility: hidden;
+}
+
+/* Every node has a focusable DOM counterpart, positioned by the engine. */
+.anchors {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.anchor {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 44px;
+  height: 44px;
+  margin: -22px 0 0 -22px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  pointer-events: none;
+}
+.anchor:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: -5px;
+  border-radius: 50%;
+}
+
+.hint {
+  position: absolute;
+  right: 0;
+  bottom: 84px;
+  left: 0;
+  z-index: 10;
+  margin: 0;
+  padding: 0 16px;
+  color: var(--muted);
+  font: 400 0.72rem/1.4 var(--mono);
+  text-align: center;
+  pointer-events: none;
+  transition: opacity 0.6s ease;
+}
+.hint[data-gone] {
+  opacity: 0;
+}
+.hint-coarse {
+  display: none;
+}
+
+/* The query line. */
+.query {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  z-index: 25;
+  width: min(440px, calc(100vw - 32px));
+  transform: translateX(-50%);
+}
+.query form {
+  display: flex;
+  align-items: center;
+  height: 44px;
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  background: var(--bg);
+}
+.query[data-open] form,
+.query form:hover {
+  border-color: var(--muted);
+}
+.query form:focus-within {
+  outline: 2px solid var(--signal);
+  outline-offset: 2px;
+}
+.query label {
+  display: flex;
+  align-items: center;
+  align-self: stretch;
+  padding: 0 4px 0 14px;
+}
+.query .slash {
+  color: var(--muted);
+  font: 500 0.82rem/1 var(--mono);
+}
+.query input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  padding: 0 14px 0 6px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--ink);
+  font: 400 0.82rem/1 var(--mono);
+}
+.query input::placeholder {
+  color: var(--muted);
+  opacity: 1;
+}
+.query-results {
+  margin-bottom: 6px;
+  border: 1px solid var(--rule);
+  background: var(--bg);
+}
+.query-results ol {
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+}
+.query-results button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  min-height: 36px;
+  padding: 0 14px;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font: 400 0.86rem/1.2 var(--sans);
+  text-align: left;
+  cursor: pointer;
+}
+.query-results button:hover {
+  background: var(--rule);
+}
+.query-results .score {
+  color: var(--muted);
+  font: 500 0.76rem/1 var(--mono);
+}
+.query-results li[data-top] .score {
+  color: var(--signal);
+}
+.query-results .refusal {
+  margin: 0;
+  padding: 11px 14px;
+  font-size: 0.86rem;
+}
+
+/* Cards for satellites and stations. */
+.card {
+  position: absolute;
+  right: 16px;
+  bottom: 24px;
+  z-index: 30;
+  width: 384px;
+  max-height: calc(100% - 110px);
+  padding: 18px 20px 20px;
+  overflow: auto;
+  border: 1px solid var(--rule);
+  background: var(--bg);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+.card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+.card h2 {
+  margin: 0;
+  font-size: 1.18rem;
+  line-height: 1.25;
+  font-weight: 650;
+  font-stretch: 112%;
+}
+.card-close {
+  min-height: 32px;
+  margin: -4px -6px 0 0;
+  padding: 0 6px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font: 400 0.72rem/1 var(--mono);
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+  cursor: pointer;
+}
+.card-close:hover {
+  color: var(--ink);
+}
+.card p {
+  margin: 8px 0 0;
+}
+.card-meta {
+  color: var(--muted);
+  font: 400 0.74rem/1.5 var(--mono);
+}
+.card-lede {
+  font-size: 1rem;
+  font-weight: 500;
+}
+.card .pair {
+  grid-template-columns: 1fr;
+  margin-top: 14px;
+}
+.card .pair > div + div {
+  border-top: 1px solid var(--rule);
+  border-left: 0;
+}
+.card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+.card-actions .btn {
+  min-height: 44px;
+  padding: 0 14px;
+  font-size: 0.86rem;
+}
+.card-skills {
+  margin: 14px 0 0;
+  border-top: 1px solid var(--rule);
+}
+.card-skills > div {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--rule);
+}
+.card-skills dt {
+  color: var(--muted);
+  font: 400 0.72rem/1.5 var(--mono);
+}
+.card-skills dd {
+  margin: 0;
+}
+
+@media (pointer: coarse) {
+  .hint-fine {
+    display: none;
+  }
+  .hint-coarse {
+    display: inline;
+  }
+}
+
+@media (max-width: 760px), (pointer: coarse) {
+  /* Query line and view toggle share a bottom bar within thumb reach. */
+  .query {
+    right: calc(186px + env(safe-area-inset-right, 0px));
+    bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+    left: calc(12px + env(safe-area-inset-left, 0px));
+    width: auto;
+    transform: none;
+  }
+  .query form {
+    height: 50px;
+  }
+  .query input {
+    font-size: 16px; /* below 16 px iOS zooms the page on focus */
+  }
+  .query-results {
+    width: calc(100vw - 24px);
+  }
+  .query-results button {
+    min-height: 44px;
+  }
+  .hint {
+    bottom: calc(var(--bar-h) + 10px);
+  }
+  .card-close {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+@media (max-width: 760px) {
+  .card {
+    right: 0;
+    bottom: var(--bar-h);
+    left: 0;
+    width: auto;
+    max-height: 62%;
+    border-width: 1px 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .field-canvas,
+  .hint {
+    transition: none;
+  }
+}
